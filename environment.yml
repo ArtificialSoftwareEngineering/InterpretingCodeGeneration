@@ -222,6 +222,7 @@ dependencies:
     - fastscript==1.0.0
     - filelock==3.0.12
     - gast==0.3.3
+    - git+https://github.com/WM-SEMERU/ds4se.git@dc89a360a9a4a5834963863e2100503a78e27c6c
     - google-auth==1.21.0
     - google-pasta==0.2.0
     - grpcio==1.31.0

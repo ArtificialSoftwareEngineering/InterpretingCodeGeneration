@@ -7,24 +7,27 @@ entries:
 - folders:
   - folderitems:
     - output: web,pdf
-      title: Export to modules
-      url: /export.html
+      title: Overview
+      url: /
     - output: web,pdf
-      title: Convert to html
-      url: /export2html.html
+      title: Title
+      url: code_prep_bpe.html
     - output: web,pdf
-      title: Show doc
-      url: /showdoc.html
+      title: module name here
+      url: core.html
     - output: web,pdf
-      title: Test functions
-      url: /test.html
+      title: Loading Datasets
+      url: code_gen_gru.html
     - output: web,pdf
-      title: Core functions
-      url: /core.html
+      title: Model
+      url: model.html
     - output: web,pdf
-      title: Command line functions
-      url: /cli.html
+      title: Experiments
+      url: experiments.html
+    - output: web,pdf
+      title: Scratch NB for prototyping
+      url: scratch_nb.html
     output: web
-    title: Notebook
+    title: icodegen
   output: web
   title: Sidebar

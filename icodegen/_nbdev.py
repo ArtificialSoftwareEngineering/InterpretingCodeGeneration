@@ -2,9 +2,13 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {}
+index = {"Model": "01_model.ipynb",
+         "TransformerModel": "01_model.ipynb",
+         "GRUModel": "01_model.ipynb",
+         "get_mean_probs": "02_experiments.ipynb"}
 
-modules = []
+modules = ["model.py",
+           "experiments.py"]
 
 doc_url = "https://danaderp.github.io/icodegen/"
 

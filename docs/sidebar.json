@@ -1,10 +1,11 @@
 {
-  "Notebook": {
-    "Export to modules": "/export",
-    "Convert to html": "/export2html",
-    "Show doc": "/showdoc",
-    "Test functions": "/test",
-    "Core functions": "/core",
-    "Command line functions": "/cli"
+  "icodegen": {
+    "Overview": "/",
+    "Title": "code_prep_bpe.html",
+    "module name here": "core.html",
+    "Loading Datasets": "code_gen_gru.html",
+    "Model": "model.html",
+    "Experiments": "experiments.html",
+    "Scratch NB for prototyping": "scratch_nb.html"
   }
 }

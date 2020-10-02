@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 
 from ds4se.mgmnt.prep.i import jsonl_list_to_dataframe, get_dfs
@@ -15,17 +16,32 @@ from pathlib import Path
 from transformers import GPT2Tokenizer, TFGPT2LMHeadModel
 
 # Cell
-# TODO: write test case
-def get_mean_probs(df, model):
+def get_mean_probs(df, model, n = None):
+    """
+    Get the mean probability of each token that the model
+    should predict for an entire pandas dataframe.
+
+    :param df: the pandas dataframe containing each method to have the model predict on
+    :param model: the model used to generate the predictions
+    :param n: the number of methods to evaluate. If none, the entire dataframe will be used
+    :returns: returns a numpy array of the mean probability for each token in the model's vocab
+    """
+    if n is None: n = len(df)
+
+    # setup container lists for the number of occurrences and sum of probabilities for each token
     counts = [0] * len(model.tokenizer)
     sum_probs = [0.] * len(model.tokenizer)
-    for mthd in df.code.values[:100]:
+    # loop through each
+    for mthd in df.code.values[:n]:
+        # token the method and generate the probabilities for the model's predictions
         inputs = model.tokenize(mthd)
         probs = model.get_probs(inputs)[0].numpy()
+        # loop through each token and its probability and update the container lists
         for idx, p in zip(inputs['input_ids'][0], probs):
             counts[idx] += 1
             sum_probs[idx] += p[idx]
 
+    # convert the lists to numpy lists and perform element wise division to get the mean probabilities for each token
     counts = np.array(counts)
     sum_probs = np.array(sum_probs)
     return sum_probs / counts

@@ -14,15 +14,21 @@ class Model(ABC):
         self.model = model
 
     @abstractmethod
-    def get_probs(self, method):
+    def tokenize(self, method):
+        pass
+
+    @abstractmethod
+    def get_probs(self, inputs):
         pass
 
 # Cell
 
 # Tensorflow Huggingface Transformer
 class TransformerModel(Model):
-    def get_probs(self, method):
-        inputs = self.tokenizer("Hello, my dog is cute", return_tensors="tf")
+    def tokenize(self, method):
+        return self.tokenizer(method, return_tensors="tf")
+
+    def get_probs(self, inputs):
         outputs = self.model(inputs)
         logits = outputs[0]
         probs = tf.nn.softmax(logits)

@@ -15,14 +15,17 @@ from pathlib import Path
 from transformers import GPT2Tokenizer, TFGPT2LMHeadModel
 
 # Cell
-# TODO: make it specific for types of tokens because this just gets overall mean regardless of if the tokens was in the method and therefore could tank the mean prob for that token
+# TODO: write test case
 def get_mean_probs(df, model):
-    mean_probs = []
-    for mthd in df.code.values[:10]:
-        probs = model.get_probs(mthd)[0]
-        mean_prob = tf.math.reduce_mean(probs, axis = 0)
-        mean_probs.append(mean_prob)
+    counts = [0] * len(model.tokenizer)
+    sum_probs = [0.] * len(model.tokenizer)
+    for mthd in df.code.values[:100]:
+        inputs = model.tokenize(mthd)
+        probs = model.get_probs(inputs)[0].numpy()
+        for idx, p in zip(inputs['input_ids'][0], probs):
+            counts[idx] += 1
+            sum_probs[idx] += p[idx]
 
-    mean_probs = tf.convert_to_tensor(mean_probs)
-    mean_probs = tf.reduce_mean(mean_probs, axis = 0)
-    return mean_probs
+    counts = np.array(counts)
+    sum_probs = np.array(sum_probs)
+    return sum_probs / counts

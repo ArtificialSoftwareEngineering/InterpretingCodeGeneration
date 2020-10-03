@@ -12,6 +12,7 @@ jobs:
     - name: Install the library
       run: |
         conda env create -f environment.yml
+        conda init
         conda activate icodegen
         pip install nbdev jupyter
         pip install -e .

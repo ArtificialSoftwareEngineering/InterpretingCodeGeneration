@@ -11,6 +11,8 @@ jobs:
         architecture: 'x64'
     - name: Install the library
       run: |
+        conda env create -f environment.yml
+        conda activate icodegen
         pip install nbdev jupyter
         pip install -e .
     - name: Read all notebooks

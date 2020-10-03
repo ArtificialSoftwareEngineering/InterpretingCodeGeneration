@@ -7,12 +7,11 @@ jobs:
     - uses: actions/checkout@v1
     - uses: conda-incubator/setup-miniconda@v1
       with:
-        python-version: '3.6'
-        architecture: 'x64'
+        activate-environment: anaconda-client-env
+        environment-file: environment.yml
+        auto-activate-base: false
     - name: Install the library
       run: |
-        conda env create -f environment.yml
-        conda activate icodegen
         pip install nbdev jupyter
         pip install -e .
     - name: Read all notebooks

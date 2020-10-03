@@ -5,7 +5,8 @@ __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 index = {"Model": "01_model.ipynb",
          "TransformerModel": "01_model.ipynb",
          "GRUModel": "01_model.ipynb",
-         "get_mean_probs": "02_experiments.ipynb"}
+         "get_mean_probs": "02_experiments.ipynb",
+         "get_mean_cross_entropy": "02_experiments.ipynb"}
 
 modules = ["model.py",
            "experiments.py"]

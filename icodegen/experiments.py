@@ -10,7 +10,6 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-from ds4se.mgmnt.prep.i import jsonl_list_to_dataframe, get_dfs
 from .model import *
 from pathlib import Path
 from transformers import GPT2Tokenizer, TFGPT2LMHeadModel

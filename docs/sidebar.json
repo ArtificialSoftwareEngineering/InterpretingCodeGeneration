@@ -2,7 +2,7 @@
   "icodegen": {
     "Overview": "/",
     "Title": "code_prep_bpe.html",
-    "module name here": "core.html",
+    "Data": "data.html",
     "Loading Datasets": "code_gen_gru.html",
     "Model": "model.html",
     "Experiments": "experiments.html",

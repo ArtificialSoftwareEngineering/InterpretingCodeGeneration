@@ -2,12 +2,13 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
-index = {"beautify_code": "00_data.ipynb",
+index = {"remove_non_ascii": "00_data.ipynb",
+         "beautify_code": "00_data.ipynb",
+         "extra_tokens": "00_data.ipynb",
          "java_reserved_tokens": "00_data.ipynb",
          "java_operator_tokens": "00_data.ipynb",
          "java_structural_tokens": "00_data.ipynb",
          "java_extra_tokens": "00_data.ipynb",
-         "extra_tokens": "00_data.ipynb",
          "java_special_tokens": "00_data.ipynb",
          "replace_special_tokens": "00_data.ipynb",
          "train_tokenizer": "00_data.ipynb",

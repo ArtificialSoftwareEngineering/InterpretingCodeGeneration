@@ -11,9 +11,10 @@ import re
 from pathlib import Path
 from subprocess import CalledProcessError, check_output
 from tokenizers import Tokenizer, models, pre_tokenizers, decoders, trainers, processors
+from typing import Dict, Optional
 
 # Cell
-def _isASCII(mthd: str):
+def _isASCII(mthd: str) -> bool:
     """
     Check if the given method contains only ASCII characters. From https://stackoverflow.com/a/27084708/5768407.
 
@@ -27,7 +28,7 @@ def _isASCII(mthd: str):
     else:
         return True
 
-def remove_non_ascii(df, n = None):
+def remove_non_ascii(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
     """
     Remove all methods that contain non-ascii characters from a given pandas dataframe, not in-place.
 
@@ -38,12 +39,12 @@ def remove_non_ascii(df, n = None):
     if n is None: n = len(df)
 
     df = df.iloc[:n].copy()
-    df = df[df.code.apply(lambda x: _isASCII(x))]
+    df = df[df.code.apply(_isASCII)]
 
     return df
 
 # Cell
-def _beautify(mthd):
+def _beautify(mthd: str) -> str:
     """
     Beautifies a given method using uncrustify with the sun.cfg style, i.e., Oracle's style.
 
@@ -70,7 +71,7 @@ def _beautify(mthd):
 
     return beaut_mthd
 
-def beautify_code(df, n = None):
+def beautify_code(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
     """
     Beautify the methods in a pandas dataframe using uncrustify with the sun.cfg style, i.e., Oracle's style, not in-place.
 
@@ -144,13 +145,13 @@ java_special_tokens = {
 }
 
 # Cell
-def _replace_toks(mthd, spec_toks):
+def _replace_toks(mthd: str, spec_toks: Dict[str, str]) -> str:
     """
     Helper function for replacing all special tokens in a given method. This will replace longer special tokens first in order to not mistakenly breakup a special token that is part of a longer sequence. Adapted from https://stackoverflow.com/a/6117124/5768407 and https://stackoverflow.com/a/11753945/5768407
 
-    :param mthd: the method to have it's special tokens replaced
+    :param mthd: the method to have its special tokens replaced
     :param spec_toks: a dictionary containing the special tokens to replace and the new tokens to replace them with
-    :returns: returns the method with all of its special tokens replaced
+    :returns: returns the method with its special tokens replaced
     """
     # construct escaped versions of keys for running through regex
     spec_toks = dict((re.escape(k), spec_toks[k]) for k in sorted(spec_toks, key=len, reverse=True))
@@ -161,7 +162,7 @@ def _replace_toks(mthd, spec_toks):
 
     return mthd
 
-def replace_special_tokens(df, spec_toks, n = None):
+def replace_special_tokens(df: pd.DataFrame, spec_toks: Dict[str, str], n: Optional[int] = None) -> pd.DataFrame:
     """
     Replace all the special tokens in a pandas dataframe.
 
@@ -177,7 +178,7 @@ def replace_special_tokens(df, spec_toks, n = None):
     return df
 
 # Cell
-def train_tokenizer(df, n = None, vocab_sz = 20_000, min_freq = 2, output = None):
+def train_tokenizer(df: pd.DataFrame, n: Optional[int] = None, vocab_sz: Optional[int] = 20_000, min_freq: Optional[int] = 2, output: Optional[Path] = None) -> Tokenizer:
     """
     Train a ByteLevel BPE tokenizer on a given pandas dataframe. Code adapted from https://github.com/huggingface/tokenizers/tree/master/bindings/python.
 

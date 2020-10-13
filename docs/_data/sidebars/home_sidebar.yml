@@ -16,6 +16,9 @@ entries:
       title: Data
       url: data.html
     - output: web,pdf
+      title: Data Transforms
+      url: data.transforms.html
+    - output: web,pdf
       title: Loading Datasets
       url: code_gen_gru.html
     - output: web,pdf

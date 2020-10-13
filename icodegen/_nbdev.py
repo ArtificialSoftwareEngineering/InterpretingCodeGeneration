@@ -12,6 +12,10 @@ index = {"remove_non_ascii": "00_data.ipynb",
          "java_special_tokens": "00_data.ipynb",
          "replace_special_tokens": "00_data.ipynb",
          "train_tokenizer": "00_data.ipynb",
+         "java_comment_remover": "00_data.transforms.ipynb",
+         "line_randomizer": "00_data.transforms.ipynb",
+         "code_token_randomizer": "00_data.transforms.ipynb",
+         "transform_df": "00_data.transforms.ipynb",
          "Model": "01_model.ipynb",
          "TransformerModel": "01_model.ipynb",
          "GRUModel": "01_model.ipynb",
@@ -19,6 +23,7 @@ index = {"remove_non_ascii": "00_data.ipynb",
          "get_mean_cross_entropy": "02_experiments.ipynb"}
 
 modules = ["data.py",
+           "data/transforms.py",
            "model.py",
            "experiments.py"]
 

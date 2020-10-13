@@ -3,6 +3,7 @@
     "Overview": "/",
     "Title": "code_prep_bpe.html",
     "Data": "data.html",
+    "Data Transforms": "data.transforms.html",
     "Loading Datasets": "code_gen_gru.html",
     "Model": "model.html",
     "Experiments": "experiments.html",

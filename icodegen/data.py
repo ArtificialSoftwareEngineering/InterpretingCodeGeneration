@@ -82,7 +82,7 @@ def beautify_code(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
     if n is None: n = len(df)
 
     df = df.iloc[:n].copy()
-    df.code = df.code.apply(lambda mthd: _beautify(mthd))
+    df.code = df.code.apply(_beautify)
 
     return df
 
@@ -178,13 +178,13 @@ def replace_special_tokens(df: pd.DataFrame, spec_toks: Dict[str, str], n: Optio
     return df
 
 # Cell
-def train_tokenizer(df: pd.DataFrame, n: Optional[int] = None, vocab_sz: Optional[int] = 20_000, min_freq: Optional[int] = 2, output: Optional[Path] = None) -> Tokenizer:
+def train_tokenizer(df: pd.DataFrame, n: Optional[int] = None, vocab_sz: Optional[int] = 10_000, min_freq: Optional[int] = 2, output: Optional[Path] = None) -> Tokenizer:
     """
     Train a ByteLevel BPE tokenizer on a given pandas dataframe. Code adapted from https://github.com/huggingface/tokenizers/tree/master/bindings/python.
 
     :param df: the pandas dataframe containing each method to have the tokenizer train on
     :param n: the number of methods to evaluate. If none, the entire dataframe will be used
-    :param vocab_sz: the maximum vocabulary size of the trained tokenizer
+    :param vocab_sz: the maximum vocabulary size of the trained tokenizer. Defaulted was selected from: Big Code != Big Vocabulary: Open-Vocabulary Models for Source Code
     :param min_freq: the minimum frequency a token has to occur to be considered
     :returns: returns a trained ByteLevel BPE tokenizer
     """

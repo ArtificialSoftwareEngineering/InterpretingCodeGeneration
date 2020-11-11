@@ -1,0 +1,5 @@
+[core]
+    remote = tower2remote
+['remote "tower2remote"']
+    url = ssh://semeru@rocco.cs.wm.edu:6174/mnt/data/ds4se/dvc-ds4se
+    password = semerulab2018

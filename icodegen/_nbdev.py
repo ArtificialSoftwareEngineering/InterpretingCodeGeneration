@@ -20,6 +20,8 @@ index = {"remove_non_ascii": "00_data.ipynb",
          "TransformerModel": "01_model.ipynb",
          "GRUModel": "01_model.ipynb",
          "get_mean_probs": "02_experiments.ipynb",
+         "find_parens": "02_experiments.ipynb",
+         "mean_dist_probs": "02_experiments.ipynb",
          "get_mean_cross_entropy": "02_experiments.ipynb"}
 
 modules = ["data.py",

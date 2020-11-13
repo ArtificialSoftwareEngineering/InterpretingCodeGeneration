@@ -1,5 +1,5 @@
 [core]
-    remote = localsemeru
+    remote = tower2remote
 ['remote "tower2remote"']
     url = ssh://semeru@rocco.cs.wm.edu:6174/mnt/data/icode_gen/dvc-icodegen
     password = semerulab2018

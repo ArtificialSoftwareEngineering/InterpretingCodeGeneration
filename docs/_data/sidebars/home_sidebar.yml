@@ -10,26 +10,14 @@ entries:
       title: Overview
       url: /
     - output: web,pdf
-      title: Title
-      url: code_prep_bpe.html
-    - output: web,pdf
       title: Data
-      url: data.html
+      url: data.core.html
     - output: web,pdf
       title: Data Transforms
       url: data.transforms.html
     - output: web,pdf
-      title: Loading Datasets
-      url: code_gen_gru.html
-    - output: web,pdf
       title: Model
       url: model.html
-    - output: web,pdf
-      title: Experiments
-      url: experiments.html
-    - output: web,pdf
-      title: Scratch NB for prototyping
-      url: scratch_nb.html
     output: web
     title: icodegen
   output: web

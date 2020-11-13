@@ -1,12 +1,8 @@
 {
   "icodegen": {
     "Overview": "/",
-    "Title": "code_prep_bpe.html",
-    "Data": "data.html",
+    "Data": "data.core.html",
     "Data Transforms": "data.transforms.html",
-    "Loading Datasets": "code_gen_gru.html",
-    "Model": "model.html",
-    "Experiments": "experiments.html",
-    "Scratch NB for prototyping": "scratch_nb.html"
+    "Model": "model.html"
   }
 }

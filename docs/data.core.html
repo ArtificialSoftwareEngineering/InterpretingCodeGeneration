@@ -527,10 +527,11 @@ nb_path: "nbs/00_data.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="train_tokenizer" class="doc_header"><code>train_tokenizer</code><a href="https://github.com/danaderp/InterpretingCodeGeneration/tree/master/icodegen/data/core.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>train_tokenizer</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>10000</code></em>, <strong><code>min_freq</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>2</code></em>, <strong><code>output</code></strong>:<code>Optional</code>[<code>Path</code>]=<em><code>None</code></em>)</p>
+<h4 id="train_tokenizer" class="doc_header"><code>train_tokenizer</code><a href="https://github.com/danaderp/InterpretingCodeGeneration/tree/master/icodegen/data/core.py#L183" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>train_tokenizer</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>spec_toks</code></strong>:<code>Dict</code>[<code>str</code>, <code>str</code>], <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>10000</code></em>, <strong><code>min_freq</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>2</code></em>, <strong><code>output</code></strong>:<code>Optional</code>[<code>Path</code>]=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Train a ByteLevel BPE tokenizer on a given pandas dataframe. Code adapted from <a href="https://github.com/huggingface/tokenizers/tree/master/bindings/python">https://github.com/huggingface/tokenizers/tree/master/bindings/python</a>.</p>
 <p>:param df: the pandas dataframe containing each method to have the tokenizer train on
+:param spec_toks: dict of special tokens to add to the tokenizers so they do not get split
 :param n: the number of methods to evaluate. If none, the entire dataframe will be used
 :param vocab_sz: the maximum vocabulary size of the trained tokenizer. Defaulted was selected from: Big Code != Big Vocabulary: Open-Vocabulary Models for Source Code
 :param min_freq: the minimum frequency a token has to occur to be considered
@@ -557,7 +558,7 @@ nb_path: "nbs/00_data.core.ipynb"
     <span class="s1">&#39;&lt;triple_greater&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;Ġ&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;greater&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;Ġ&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;+&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;Ġ&#39;</span><span class="p">,</span>
     <span class="s1">&#39;&lt;public&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;Ġ&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;++&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;Ġ&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;n&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;n&gt;&#39;</span>
 <span class="p">]</span>
-<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">train_tokenizer</span><span class="p">(</span><span class="n">df_fake</span><span class="p">)</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">train_tokenizer</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">java_special_tokens</span><span class="p">)</span>
 <span class="n">encoded</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">fake_data</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="n">TOKENIZED_SPEC</span> <span class="o">==</span> <span class="n">encoded</span><span class="o">.</span><span class="n">tokens</span>

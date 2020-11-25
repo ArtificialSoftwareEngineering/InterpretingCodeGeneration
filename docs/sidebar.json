@@ -2,7 +2,9 @@
   "icodegen": {
     "Overview": "/",
     "Data": "data.core.html",
+    "Exploratory Data Analysis ": "data.eda.html",
     "Data Transforms": "data.transforms.html",
-    "Model": "model.html"
+    "Model": "model.core.html",
+    "Deep Generative Coding with GRUs ": "model.gru.html"
   }
 }

@@ -1,10 +1,10 @@
 {
-  "Notebook": {
-    "Export to modules": "/export",
-    "Convert to html": "/export2html",
-    "Show doc": "/showdoc",
-    "Test functions": "/test",
-    "Core functions": "/core",
-    "Command line functions": "/cli"
+  "icodegen": {
+    "Overview": "/",
+    "Data": "data.core.html",
+    "Exploratory Data Analysis ": "data.eda.html",
+    "Data Transforms": "data.transforms.html",
+    "Model": "model.core.html",
+    "Deep Generative Coding with GRUs ": "model.gru.html"
   }
 }

@@ -16,13 +16,15 @@ index = {"remove_non_ascii": "00_data.core.ipynb",
          "line_randomizer": "00_data.transforms.ipynb",
          "code_token_randomizer": "00_data.transforms.ipynb",
          "transform_df": "00_data.transforms.ipynb",
-         "Model": "01_model.ipynb",
-         "TransformerModel": "01_model.ipynb",
-         "GRUModel": "01_model.ipynb"}
+         "Model": "01_model.core.ipynb",
+         "TransformerModel": "01_model.core.ipynb",
+         "GRUModel": "01_model.core.ipynb"}
 
 modules = ["data/core.py",
+           "data/eda.py",
            "data/transforms.py",
-           "model.py"]
+           "model/core.py",
+           "model/gru.py"]
 
 doc_url = "https://danaderp.github.io/icodegen/"
 

@@ -35,6 +35,7 @@ class TransformerModel(Model):
 
         return probs
 
+
 # Tensorflow GRU Model
 class GRUModel(Model):
     def get_probs(self, method):

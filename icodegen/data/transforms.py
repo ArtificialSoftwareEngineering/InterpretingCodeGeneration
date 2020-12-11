@@ -18,16 +18,17 @@ def java_comment_remover(mthd: str) -> str:
     :param mthd: the method to have its comments removed
     :returns: returns the method with its comments removed
     """
+
     def replacer(match):
         s = match.group(0)
-        if s.startswith('/'):
-            return " " # note: a space and not an empty string
+        if s.startswith("/"):
+            return " "  # note: a space and not an empty string
         else:
             return s
 
     pattern = re.compile(
         r'//.*?$|</>\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
-        re.DOTALL | re.MULTILINE
+        re.DOTALL | re.MULTILINE,
     )
     return re.sub(pattern, replacer, mthd)
 
@@ -39,10 +40,11 @@ def line_randomizer(mthd: str) -> str:
     :param mthd: the method to have its lines randomized
     :returns: returns the method with its lines randomized
     """
-    mthd = mthd.split('\n')
+    mthd = mthd.split("\n")
     shuffle(mthd)
 
-    return '\n'.join(mthd)
+    return "\n".join(mthd)
+
 
 def code_token_randomizer(mthd: str) -> str:
     """
@@ -51,13 +53,15 @@ def code_token_randomizer(mthd: str) -> str:
     :param mthd: the method to have its code tokens randomized
     :returns: returns the method with its code tokens randomized
     """
-    mthd = mthd.split(' ')
+    mthd = mthd.split(" ")
     shuffle(mthd)
 
-    return ' '.join(mthd)
+    return " ".join(mthd)
 
 # Cell
-def transform_df(df: pd.DataFrame, transform: Callable, n: Optional[int] = None) -> pd.DataFrame:
+def transform_df(
+    df: pd.DataFrame, transform: Callable, n: Optional[int] = None
+) -> pd.DataFrame:
     """
     Transform the given pandas dataframe using the given transformation.
 
@@ -66,7 +70,8 @@ def transform_df(df: pd.DataFrame, transform: Callable, n: Optional[int] = None)
     :param n: the number of methods to evaluate. If none, the entire dataframe will be used
     :returns: returns a modified dataframe with the methods transformed
     """
-    if n is None: n = len(df)
+    if n is None:
+        n = len(df)
 
     df = df.iloc[:n].copy()
     df.code = df.code.apply(transform)

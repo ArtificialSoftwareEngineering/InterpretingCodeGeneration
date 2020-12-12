@@ -18,9 +18,6 @@ entries:
     - output: web,pdf
       title: Model
       url: model.core.html
-    - output: web,pdf
-      title: CLI
-      url: cli.html
     output: web
     title: icodegen
   output: web

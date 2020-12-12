@@ -24,11 +24,12 @@ def _isASCII(mthd: str) -> bool:
     :returns: returns a boolean representing whether or not the given method contains only ASCII characters
     """
     try:
-        mthd.encode(encoding = 'utf-8').decode('ascii')
+        mthd.encode(encoding="utf-8").decode("ascii")
     except UnicodeDecodeError:
         return False
     else:
         return True
+
 
 def remove_non_ascii(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
     """
@@ -38,7 +39,8 @@ def remove_non_ascii(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
     :param n: the number of methods to evaluate. If none, the entire dataframe will be used
     :returns: returns a new dataframe without methods that contain non-ascii characters
     """
-    if n is None: n = len(df)
+    if n is None:
+        n = len(df)
 
     df = df.iloc[:n].copy()
     df = df[df.code.apply(_isASCII)]
@@ -57,21 +59,27 @@ def _beautify(mthd: str) -> str:
     icodegen_path = Path(icodegen.__path__[0])
 
     # create tmp file to store df contents for training tokenizer
-    tmp_path = Path('/tmp')
-    tmp_path.mkdir(parents = True, exist_ok = True)
-    with open(tmp_path/'tmp.java', 'w') as f:
+    tmp_path = Path("/tmp")
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    with open(tmp_path / "tmp.java", "w") as f:
         f.write(mthd)
 
     try:
-        beaut_mthd = check_output([
-            icodegen_path/'uncrustify', '-c', icodegen_path/'sun.cfg',
-            '-f', tmp_path/'tmp.java'
-        ]).decode('utf-8')
+        beaut_mthd = check_output(
+            [
+                icodegen_path / "uncrustify",
+                "-c",
+                icodegen_path / "sun.cfg",
+                "-f",
+                tmp_path / "tmp.java",
+            ]
+        ).decode("utf-8")
     except CalledProcessError as e:
         # Exception thrown when the method is malformed, i.e, it is missing a curly brace
-        beaut_mthd = e.output.decode('utf-8')
+        beaut_mthd = e.output.decode("utf-8")
 
     return beaut_mthd
+
 
 def beautify_code(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
     """
@@ -81,7 +89,8 @@ def beautify_code(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
     :param n: the number of methods to evaluate. If none, the entire dataframe will be used
     :returns: returns a modified dataframe with the methods beautified
     """
-    if n is None: n = len(df)
+    if n is None:
+        n = len(df)
 
     df = df.iloc[:n].copy()
     df.code = df.code.apply(_beautify)
@@ -91,59 +100,119 @@ def beautify_code(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
 # Cell
 # dicts of special tokens we are adding to the tokenizers so they do not get split
 
-extra_tokens = {
-    '<n>': '\n'
-}
+extra_tokens = {"<n>": "\n"}
 
 # from https://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html
 java_reserved_tokens = {
-    '<abstract>': 'abstract', '<assert>': 'assert', '<boolean>': 'boolean',
-    '<break>': 'break', '<byte>': 'byte', '<case>': 'case',
-    '<catch>': 'catch', '<char>': 'char', '<class>': 'class',
-    '<const>': 'const', '<continue>': 'continue', '<default>': 'default',
-    '<do>': 'do', '<double>': 'double', '<else>': 'else',
-    '<enum>': 'enum', '<extends>': 'extends', '<final>': 'final',
-    '<finally>': 'finally', '<float>': 'float', '<for>': 'for',
-    '<goto>': 'goto', '<if>': 'if', '<implements>': 'implements',
-    '<import>': 'import', '<instanceof>': 'instanceof', '<int>': 'int',
-    '<interface>': 'interface', '<long>': 'long', '<native>': 'native',
-    '<new>': 'new', '<package>': 'package', '<private>': 'private',
-    '<protected>': 'protected', '<public>': 'public', '<return>': 'return',
-    '<short>': 'short', '<static>': 'static', '<strictfp>': 'strictfp',
-    '<super>': 'super', '<switch>': 'switch', '<synchronized>': 'synchronized',
-    '<this>': 'this', '<throw>': 'throw', '<throws>': 'throws',
-    '<transient>': 'transient', '<try>': 'try', '<void>': 'void',
-    '<volatile>': 'volatile', '<while>': 'while'
+    "<abstract>": "abstract",
+    "<assert>": "assert",
+    "<boolean>": "boolean",
+    "<break>": "break",
+    "<byte>": "byte",
+    "<case>": "case",
+    "<catch>": "catch",
+    "<char>": "char",
+    "<class>": "class",
+    "<const>": "const",
+    "<continue>": "continue",
+    "<default>": "default",
+    "<do>": "do",
+    "<double>": "double",
+    "<else>": "else",
+    "<enum>": "enum",
+    "<extends>": "extends",
+    "<final>": "final",
+    "<finally>": "finally",
+    "<float>": "float",
+    "<for>": "for",
+    "<goto>": "goto",
+    "<if>": "if",
+    "<implements>": "implements",
+    "<import>": "import",
+    "<instanceof>": "instanceof",
+    "<int>": "int",
+    "<interface>": "interface",
+    "<long>": "long",
+    "<native>": "native",
+    "<new>": "new",
+    "<package>": "package",
+    "<private>": "private",
+    "<protected>": "protected",
+    "<public>": "public",
+    "<return>": "return",
+    "<short>": "short",
+    "<static>": "static",
+    "<strictfp>": "strictfp",
+    "<super>": "super",
+    "<switch>": "switch",
+    "<synchronized>": "synchronized",
+    "<this>": "this",
+    "<throw>": "throw",
+    "<throws>": "throws",
+    "<transient>": "transient",
+    "<try>": "try",
+    "<void>": "void",
+    "<volatile>": "volatile",
+    "<while>": "while",
 }
 
 # from https://docs.oracle.com/javase/tutorial/java/nutsandbolts/opsummary.html
 java_operator_tokens = {
-    '<=>': '=', '<+>': '+', '<->': '-',
-    '<*>': '*', '</>': '/', '<%>': '%',
-    '<++>': '++', '<-->': '--', '<!>': '!',
-    '<==>': '==', '<!=>': '!=', '<greater>': '>',
-    '<greater_equal>': '>=', '<lesser>': '<', '<lesser_equal>': '<=',
-    '<&&>': '&&', '<||>': '||', '<?>': '?',
-    '<:>': ':', '<~>': '~', '<double_lesser>': '<<',
-    '<double_greater>': '>>', '<triple_greater>': '>>>', '<&>': '&',
-    '<^>': '^', '<|>': '|'
+    "<=>": "=",
+    "<+>": "+",
+    "<->": "-",
+    "<*>": "*",
+    "</>": "/",
+    "<%>": "%",
+    "<++>": "++",
+    "<-->": "--",
+    "<!>": "!",
+    "<==>": "==",
+    "<!=>": "!=",
+    "<greater>": ">",
+    "<greater_equal>": ">=",
+    "<lesser>": "<",
+    "<lesser_equal>": "<=",
+    "<&&>": "&&",
+    "<||>": "||",
+    "<?>": "?",
+    "<:>": ":",
+    "<~>": "~",
+    "<double_lesser>": "<<",
+    "<double_greater>": ">>",
+    "<triple_greater>": ">>>",
+    "<&>": "&",
+    "<^>": "^",
+    "<|>": "|",
 }
 
 java_structural_tokens = {
-    '<{>': '{', '<}>': '}', '<[>': '[',
-    '<]>': ']', '<lesser>': '<', '<greater>': '>',
-    '<(>': '(', '<)>': ')', '<;>': ';'
+    "<{>": "{",
+    "<}>": "}",
+    "<[>": "[",
+    "<]>": "]",
+    "<lesser>": "<",
+    "<greater>": ">",
+    "<(>": "(",
+    "<)>": ")",
+    "<;>": ";",
 }
 
 java_extra_tokens = {
-    '<@>': '@', '<...>': '...',
-    '<null>': 'null', '<true>': 'true', '<false>': 'false'
+    "<@>": "@",
+    "<...>": "...",
+    "<null>": "null",
+    "<true>": "true",
+    "<false>": "false",
 }
 
 # combination of all dictionaries
 java_special_tokens = {
-    **java_reserved_tokens, **java_operator_tokens, **java_structural_tokens,
-    **java_extra_tokens, **extra_tokens
+    **java_reserved_tokens,
+    **java_operator_tokens,
+    **java_structural_tokens,
+    **java_extra_tokens,
+    **extra_tokens,
 }
 
 # Cell
@@ -156,7 +225,12 @@ def _replace_toks(mthd: str, spec_toks: Dict[str, str]) -> str:
     :returns: returns the method with its special tokens replaced
     """
     # construct escaped versions of keys for running through regex
-    spec_toks = dict((re.escape(v), k) for k, v in sorted(java_special_tokens.items(), key = lambda x: len(x[1]), reverse = True))
+    spec_toks = dict(
+        (re.escape(v), k)
+        for k, v in sorted(
+            java_special_tokens.items(), key=lambda x: len(x[1]), reverse=True
+        )
+    )
     # construct regex pattern for finding all special tokens in a method
     pattern = re.compile("|".join(spec_toks.keys()))
     # replace all special tokens in a method
@@ -164,7 +238,10 @@ def _replace_toks(mthd: str, spec_toks: Dict[str, str]) -> str:
 
     return mthd
 
-def replace_special_tokens(df: pd.DataFrame, spec_toks: Dict[str, str], n: Optional[int] = None) -> pd.DataFrame:
+
+def replace_special_tokens(
+    df: pd.DataFrame, spec_toks: Dict[str, str], n: Optional[int] = None
+) -> pd.DataFrame:
     """
     Replace all the special tokens in a pandas dataframe.
 
@@ -172,7 +249,8 @@ def replace_special_tokens(df: pd.DataFrame, spec_toks: Dict[str, str], n: Optio
     :param n: the number of methods to evaluate. If none, the entire dataframe will be used
     :returns: returns a modified dataframe with the special tokens replaced
     """
-    if n is None: n = len(df)
+    if n is None:
+        n = len(df)
 
     df = df.iloc[:n].copy()
     df.code = df.code.apply(lambda mthd: _replace_toks(mthd, spec_toks))
@@ -180,7 +258,14 @@ def replace_special_tokens(df: pd.DataFrame, spec_toks: Dict[str, str], n: Optio
     return df
 
 # Cell
-def train_tokenizer(df: pd.DataFrame, spec_toks: Dict[str, str], n: Optional[int] = None, vocab_sz: Optional[int] = 10_000, min_freq: Optional[int] = 2, output: Optional[Path] = None) -> Tokenizer:
+def train_tokenizer(
+    df: pd.DataFrame,
+    spec_toks: Dict[str, str],
+    n: Optional[int] = None,
+    vocab_sz: Optional[int] = 10_000,
+    min_freq: Optional[int] = 2,
+    output: Optional[Path] = None,
+) -> Tokenizer:
     """
     Train a ByteLevel BPE tokenizer on a given pandas dataframe. Code adapted from https://github.com/huggingface/tokenizers/tree/master/bindings/python.
 
@@ -191,31 +276,33 @@ def train_tokenizer(df: pd.DataFrame, spec_toks: Dict[str, str], n: Optional[int
     :param min_freq: the minimum frequency a token has to occur to be considered
     :returns: returns a trained ByteLevel BPE tokenizer
     """
-    if n is None: n = len(df)
+    if n is None:
+        n = len(df)
 
     # create tmp file to store df contents for training tokenizer
-    tmp_path = Path('/tmp')
-    tmp_path.mkdir(parents = True, exist_ok = True)
-    with open(tmp_path/'tmp_tokenize.txt', 'w') as f:
-        f.write('\n'.join(df.code.values[:n]))
+    tmp_path = Path("/tmp")
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    with open(tmp_path / "tmp_tokenize.txt", "w") as f:
+        f.write("\n".join(df.code.values[:n]))
 
     # initialize a tokenizer
     tokenizer = Tokenizer(models.BPE())
 
     # customize pre-tokenization and decoding
-    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space = True)
+    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=True)
     tokenizer.decoder = decoders.ByteLevel()
-    tokenizer.post_processor = processors.ByteLevel(trim_offsets = True)
+    tokenizer.post_processor = processors.ByteLevel(trim_offsets=True)
 
     # train tokenizer with data in tmp file
     trainer = trainers.BpeTrainer(
-        vocab_size = vocab_sz, min_frequency = min_freq,
-        special_tokens = ['<pad>', '<sos>', '<eos>'] + list(spec_toks.keys())
+        vocab_size=vocab_sz,
+        min_frequency=min_freq,
+        special_tokens=["<pad>", "<sos>", "<eos>"] + list(spec_toks.keys()),
     )
-    tokenizer.train(trainer, [str(tmp_path/'tmp_tokenize.txt')])
+    tokenizer.train(trainer, [str(tmp_path / "tmp_tokenize.txt")])
 
     # save tokenizer if output path given
     if output is not None:
-        tokenizer.save(output, pretty = True)
+        tokenizer.save(output, pretty=True)
 
     return tokenizer

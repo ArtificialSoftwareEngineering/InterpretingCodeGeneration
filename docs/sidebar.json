@@ -3,6 +3,7 @@
     "Overview": "/",
     "Data": "data.core.html",
     "Data Transforms": "data.transforms.html",
-    "Model": "model.core.html"
+    "Model": "model.core.html",
+    "Evaluation": "evaluation.core.html"
   }
 }

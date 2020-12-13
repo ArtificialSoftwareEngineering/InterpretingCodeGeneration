@@ -18,6 +18,9 @@ entries:
     - output: web,pdf
       title: Model
       url: model.core.html
+    - output: web,pdf
+      title: Evaluation
+      url: evaluation.core.html
     output: web
     title: icodegen
   output: web

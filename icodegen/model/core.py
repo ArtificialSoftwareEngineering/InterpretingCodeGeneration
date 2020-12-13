@@ -9,6 +9,7 @@ from abc import ABC, abstractmethod
 
 # Cell
 class Model(ABC):
+    # TODO: Add generating the model config (but only the pieces we care about, i.e., the num layers, heads, dim size, emb size, etc) so that we can easily save it to a file for organizing evaluation results
     def __init__(self, tokenizer, model):
         self.tokenizer = tokenizer
         self.model = model
@@ -20,6 +21,8 @@ class Model(ABC):
     @abstractmethod
     def get_probs(self, inputs):
         pass
+
+    # TODO: Add save method that handles saving model and tokenizer to disc
 
 # Cell
 

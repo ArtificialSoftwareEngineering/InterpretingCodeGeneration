@@ -18,11 +18,16 @@ index = {"remove_non_ascii": "00_data.core.ipynb",
          "transform_df": "01_data.transforms.ipynb",
          "Model": "02_model.core.ipynb",
          "TransformerModel": "02_model.core.ipynb",
-         "GRUModel": "02_model.core.ipynb"}
+         "GRUModel": "02_model.core.ipynb",
+         "get_mean_probs": "04_evaluation.core.ipynb",
+         "find_parens": "04_evaluation.core.ipynb",
+         "mean_dist_probs": "04_evaluation.core.ipynb",
+         "get_mean_cross_entropy": "04_evaluation.core.ipynb"}
 
 modules = ["data/core.py",
            "data/transforms.py",
-           "model/core.py"]
+           "model/core.py",
+           "evaluation/core.py"]
 
 doc_url = "https://ArtificialSoftwareEngineering.github.io/icodegen/"
 

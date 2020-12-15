@@ -10,7 +10,9 @@ from pathlib import Path
 
 # Cell
 class Model(ABC):
-    # TODO: Add generating the model config (but only the pieces we care about, i.e., the num layers, heads, dim size, emb size, etc) so that we can easily save it to a file for organizing evaluation results
+    # TODO: Add generating the model config (but only the pieces we care about,
+    # i.e., the num layers, heads, dim size, emb size, etc) so that we can
+    # asily save it to a file for organizing evaluation results
     def __init__(self, tokenizer, model):
         self.tokenizer = tokenizer
         self.model = model
@@ -30,6 +32,12 @@ class Model(ABC):
     # TODO: Add save method that handles saving model and tokenizer to disc
 
 # Cell
+def _loss(labels, logits):
+    return tf.keras.losses.sparse_categorical_crossentropy(
+        labels, logits, from_logits=True
+    )
+
+# Cell
 
 # Tensorflow Huggingface Transformer
 class TransformerModel(Model):
@@ -43,14 +51,8 @@ class TransformerModel(Model):
 
         return probs
 
-
-# Tensorflow GRU Model
-# class GRUModel(Model):
-#     def tokenize(self, method):
-#         pass
-
-#     def get_probs(self, method):
-#         pass
+    def train(self, ds, epochs):
+        pass
 
 # Cell
 class RNNModel(Model):
@@ -81,7 +83,6 @@ class RNNModel(Model):
             )
         ]
 
-        self.tokenizer = tokenizer
         layer = RNNModel._RNN_TYPE[rnn_type]
         rnn_layers = [
             layer(
@@ -96,7 +97,7 @@ class RNNModel(Model):
             )
             for _ in range(n_layers)
         ]
-        self.model = tf.keras.Sequential(
+        model = tf.keras.Sequential(
             [
                 tf.keras.layers.Embedding(
                     input_dim=vocab_size,
@@ -111,12 +112,17 @@ class RNNModel(Model):
             ]
         )
 
-        super().__init_(self.tokenizer, self.model)
+        super().__init__(tokenizer, model)
+
+    def tokenize(self, method):
+        return self.tokenizer(method, return_tensors="tf")
 
     # TODO add code to easily train model
     def train(self, dataset, epochs):
         self.model.compile(optimizer="adam", loss=_loss)
-        _ = self.model.fit(dataset, epochs=epochs, callbacks=self.callbacks)
+        history = self.model.fit(dataset, epochs=epochs, callbacks=self.callbacks)
+
+        return history
 
     def generate(self, n, temperature=1.0):
         # Evaluation step (generating text using the learned model)
@@ -135,7 +141,8 @@ class RNNModel(Model):
             # remove the batch dimension
             predictions = tf.squeeze(predictions, 0)
 
-            # using a categorical distribution to predict the character returned by the model
+            # using a categorical distribution to predict the character
+            # returned by the model
             predictions = predictions / temperature
             predicted_id = tf.random.categorical(predictions, num_samples=1)[
                 -1, 0
@@ -147,7 +154,7 @@ class RNNModel(Model):
 
             text_generated.append(predicted_id)
 
-        return self.tokenizer.decode(text_generated), text_generated
+        return self.tokenizer.decode(text_generated)
 
     def get_probs(self, method):
         pass

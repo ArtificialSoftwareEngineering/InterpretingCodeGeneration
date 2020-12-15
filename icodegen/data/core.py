@@ -320,9 +320,9 @@ def convert_df_to_tfds(
 ):
     tokenized_mthds = [
         [tokenizer.bos_token_id]
-        + tokenizer.encode(
+        + tokenizer(
             mthd, max_length=max_length, padding="max_length", truncation=True
-        )
+        ).input_ids
         for mthd in df.code.values
     ]
     ds = tf.data.Dataset.from_tensor_slices(tokenized_mthds)

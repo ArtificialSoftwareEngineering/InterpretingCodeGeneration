@@ -2,13 +2,14 @@
 
 __all__ = ['remove_non_ascii', 'beautify_code', 'extra_tokens', 'java_reserved_tokens', 'java_operator_tokens',
            'java_structural_tokens', 'java_extra_tokens', 'java_special_tokens', 'replace_special_tokens',
-           'train_tokenizer']
+           'train_tokenizer', 'convert_df_to_tfds']
 
 # Cell
 import icodegen
 import re
 
 import pandas as pd
+import tensorflow as tf
 
 from pathlib import Path
 from subprocess import CalledProcessError, check_output
@@ -306,3 +307,25 @@ def train_tokenizer(
         tokenizer.save(output, pretty=True)
 
     return tokenizer
+
+# Cell
+def _split_input_target(mthd):
+    input_text = mthd[:-1]
+    target_text = mthd[1:]
+    return input_text, target_text
+
+
+def convert_df_to_tfds(
+    df: pd.DataFrame, tokenizer: Tokenizer, max_length: int, batch_size: int
+):
+    tokenized_mthds = [
+        [tokenizer.bos_token_id]
+        + tokenizer.encode(
+            mthd, max_length=max_length, padding="max_length", truncation=True
+        )
+        for mthd in df.code.values
+    ]
+    ds = tf.data.Dataset.from_tensor_slices(tokenized_mthds)
+    ds = ds.map(_split_input_target).batch(batch_size, drop_remainder=True)
+
+    return ds

@@ -3,19 +3,37 @@
 __all__ = ['Model', 'TransformerModel', 'RNNModel']
 
 # Cell
+import json
+
 import tensorflow as tf
 
 from abc import ABC, abstractmethod
 from pathlib import Path
+from tokenizers import Tokenizer
+
+# Cell
+def _loss(labels, logits):
+    return tf.keras.losses.sparse_categorical_crossentropy(
+        labels, logits, from_logits=True
+    )
 
 # Cell
 class Model(ABC):
-    # TODO: Add generating the model config (but only the pieces we care about,
-    # i.e., the num layers, heads, dim size, emb size, etc) so that we can
-    # asily save it to a file for organizing evaluation results
     def __init__(self, tokenizer, model):
         self.tokenizer = tokenizer
         self.model = model
+
+    @abstractmethod
+    def from_path(path):
+        pass
+
+    @abstractmethod
+    def get_probs(self, inputs):
+        pass
+
+    @abstractmethod
+    def save(self, path):
+        pass
 
     @abstractmethod
     def tokenize(self, method):
@@ -25,24 +43,13 @@ class Model(ABC):
     def train(self, ds, epochs):
         pass
 
-    @abstractmethod
-    def get_probs(self, inputs):
+# Cell
+class TransformerModel(Model):
+    def from_path(path):
         pass
 
-    # TODO: Add save method that handles saving model and tokenizer to disc
-
-# Cell
-def _loss(labels, logits):
-    return tf.keras.losses.sparse_categorical_crossentropy(
-        labels, logits, from_logits=True
-    )
-
-# Cell
-
-# Tensorflow Huggingface Transformer
-class TransformerModel(Model):
-    def tokenize(self, method):
-        return self.tokenizer(method, return_tensors="tf")
+    def generate(self, n):
+        pass
 
     def get_probs(self, inputs):
         outputs = self.model(inputs)
@@ -50,6 +57,12 @@ class TransformerModel(Model):
         probs = tf.nn.softmax(logits)
 
         return probs
+
+    def save(self, path):
+        pass
+
+    def tokenize(self, method):
+        return self.tokenizer(method, return_tensors="tf")
 
     def train(self, ds, epochs):
         pass
@@ -73,10 +86,17 @@ class RNNModel(Model):
         out_path,
         tokenizer,
     ):
+        self.rnn_type = rnn_type
+        self.n_layers = n_layers
+        self.vocab_size = vocab_size
+        self.embedding_dim = embedding_dim
+        self.rnn_units = rnn_units
+
         self.config_name = (
             f"{rnn_type}_vocab{vocab_size}_embed{embedding_dim}_units{rnn_units}"
         )
         self.out_path = Path(out_path) / self.config_name
+        self.out_path.mkdir(exist_ok=True)
         self.callbacks = [
             tf.keras.callbacks.ModelCheckpoint(
                 filepath=self.out_path / "ckpt_{epoch}", save_weights_only=True
@@ -88,9 +108,6 @@ class RNNModel(Model):
             layer(
                 rnn_units,
                 return_sequences=True,
-                # I think we need to have this not be stateful since we don't
-                # chop up examples
-                # stateful=True,
                 recurrent_initializer="glorot_uniform",
                 # following BigCode != Big Vocab Paper
                 dropout=0.1,
@@ -103,7 +120,6 @@ class RNNModel(Model):
                     input_dim=vocab_size,
                     output_dim=embedding_dim,
                     mask_zero=True,  # Zero cannot be used in the vocabulary
-                    batch_input_shape=[batch_size, None],
                 ),
             ]
             + rnn_layers
@@ -114,25 +130,37 @@ class RNNModel(Model):
 
         super().__init__(tokenizer, model)
 
-    def tokenize(self, method):
-        return self.tokenizer(method, return_tensors="tf")
+    @staticmethod
+    def from_path(path):
+        path = Path(path)
 
-    # TODO add code to easily train model
-    def train(self, dataset, epochs):
-        self.model.compile(optimizer="adam", loss=_loss)
-        history = self.model.fit(dataset, epochs=epochs, callbacks=self.callbacks)
+        tokenizer = Tokenizer.from_file(str(path / "tokenizer.json"))
+        with open(path / "model_config.json", "r") as f:
+            model_config = json.load(f)
 
-        return history
+        model = RNNModel(
+            model_config["rnn_type"],
+            model_config["n_layers"],
+            model_config["vocab_size"],
+            model_config["embedding_dim"],
+            model_config["rnn_units"],
+            1,
+            path,
+            tokenizer,
+        )
+        model.model = tf.keras.models.load_model(
+            str(path), custom_objects={"_loss": _loss}
+        )
+
+        return model
+
+    def get_probs(self, method):
+        pass
 
     def generate(self, n, temperature=1.0):
-        # Evaluation step (generating text using the learned model)
-
         # Converting our start string to numbers (vectorizing)
-        input_eval = [self.tokenizer.bos_token_id]
-        input_eval = tf.expand_dims(input_eval, 0)
-
-        # Empty string to store our results
-        text_generated = []
+        text_generated = [self.tokenizer.encode("<sos>").ids[0]]
+        input_eval = tf.expand_dims(text_generated, 0)
 
         # Here batch size == 1
         self.model.reset_states()
@@ -148,13 +176,32 @@ class RNNModel(Model):
                 -1, 0
             ].numpy()
 
+            text_generated.append(predicted_id)
             # Pass the predicted character as the next input to the model
             # along with the previous hidden state
-            input_eval = tf.expand_dims([predicted_id], 0)
+            input_eval = tf.expand_dims(text_generated, 0)
 
-            text_generated.append(predicted_id)
+        return self.tokenizer.decode(text_generated, skip_special_tokens=False)
 
-        return self.tokenizer.decode(text_generated)
+    def save(self):
+        self.tokenizer.save(str(self.out_path / "tokenizer.json"), pretty=True)
+        self.model.save(str(self.out_path))
+        model_config = {
+            "rnn_type": self.rnn_type,
+            "n_layers": self.n_layers,
+            "vocab_size": self.vocab_size,
+            "embedding_dim": self.embedding_dim,
+            "rnn_units": self.rnn_units,
+        }
+        with open(self.out_path / "model_config.json", "w") as f:
+            json.dump(model_config, f)
 
-    def get_probs(self, method):
-        pass
+    def tokenize(self, method):
+        return self.tokenizer(method, return_tensors="tf")
+
+    # TODO add tensorboard call back for easy visualization
+    def train(self, dataset, epochs):
+        self.model.compile(optimizer="adam", loss=_loss)
+        history = self.model.fit(dataset, epochs=epochs, callbacks=self.callbacks)
+
+        return history

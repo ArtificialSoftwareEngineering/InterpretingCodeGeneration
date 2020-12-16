@@ -262,6 +262,7 @@ def replace_special_tokens(
 def train_tokenizer(
     df: pd.DataFrame,
     spec_toks: Dict[str, str],
+    max_length: int,
     n: Optional[int] = None,
     vocab_sz: Optional[int] = 10_000,
     min_freq: Optional[int] = 2,
@@ -290,6 +291,8 @@ def train_tokenizer(
     tokenizer = Tokenizer(models.BPE())
 
     # customize pre-tokenization and decoding
+    # Should probably change add_prefix_space to false for reproducibility,
+    # but keeping True for now for backwards compatability with previously trained tokenizer
     tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=True)
     tokenizer.decoder = decoders.ByteLevel()
     tokenizer.post_processor = processors.ByteLevel(trim_offsets=True)
@@ -301,6 +304,8 @@ def train_tokenizer(
         special_tokens=["<pad>", "<sos>", "<eos>"] + list(spec_toks.keys()),
     )
     tokenizer.train(trainer, [str(tmp_path / "tmp_tokenize.txt")])
+    tokenizer.enable_padding(length=max_length, pad_token="<pad>")
+    tokenizer.enable_truncation(max_length)
 
     # save tokenizer if output path given
     if output is not None:
@@ -312,17 +317,16 @@ def train_tokenizer(
 def _split_input_target(mthd):
     input_text = mthd[:-1]
     target_text = mthd[1:]
+
     return input_text, target_text
 
 
 def convert_df_to_tfds(
     df: pd.DataFrame, tokenizer: Tokenizer, max_length: int, batch_size: int
 ):
+    # TODO: optimize using tfds map function with tokenizer.encode_batch thingy
     tokenized_mthds = [
-        [tokenizer.bos_token_id]
-        + tokenizer(
-            mthd, max_length=max_length, padding="max_length", truncation=True
-        ).input_ids
+        [tokenizer.encode("<sos>").ids[0]] + tokenizer.encode(mthd).ids
         for mthd in df.code.values
     ]
     ds = tf.data.Dataset.from_tensor_slices(tokenized_mthds)

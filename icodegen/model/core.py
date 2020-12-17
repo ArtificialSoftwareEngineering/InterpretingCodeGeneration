@@ -114,8 +114,8 @@ class RNNModel(Model):
                 monitor="val_loss",
                 # "no longer improving" being defined as "no better than 1e-2 less"
                 min_delta=1e-2,
-                # "no longer improving" being further defined as "for at least 2 epochs"
-                patience=2,
+                # "no longer improving" being further defined as "for at least 5 epochs"
+                patience=5,
                 verbose=1,
             ),
         ]
@@ -127,7 +127,7 @@ class RNNModel(Model):
                 return_sequences=True,
                 recurrent_initializer="glorot_uniform",
                 # following BigCode != Big Vocab Paper
-                dropout=0.1,
+                dropout=0.5,
             )
             for _ in range(n_layers)
         ]

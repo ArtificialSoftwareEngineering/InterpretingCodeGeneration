@@ -291,9 +291,7 @@ def train_tokenizer(
     tokenizer = Tokenizer(models.BPE())
 
     # customize pre-tokenization and decoding
-    # Should probably change add_prefix_space to false for reproducibility,
-    # but keeping True for now for backwards compatability with previously trained tokenizer
-    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=True)
+    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=False)
     tokenizer.decoder = decoders.ByteLevel()
     tokenizer.post_processor = processors.ByteLevel(trim_offsets=True)
 

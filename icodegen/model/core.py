@@ -97,10 +97,27 @@ class RNNModel(Model):
         )
         self.out_path = Path(out_path) / self.config_name
         self.out_path.mkdir(exist_ok=True)
+        tensorboard_path = self.out_path / "tensorboard_logs"
+        tensorboard_path.mkdir(exist_ok=True)
         self.callbacks = [
             tf.keras.callbacks.ModelCheckpoint(
                 filepath=self.out_path / "ckpt_{epoch}", save_weights_only=True
-            )
+            ),
+            tf.keras.callbacks.TensorBoard(
+                log_dir=str(tensorboard_path),
+                histogram_freq=0,  # How often to log histogram visualizations
+                embeddings_freq=0,  # How often to log embedding visualizations
+                update_freq="epoch",
+            ),  # How often to write logs (default: once per epoch)
+            tf.keras.callbacks.EarlyStopping(
+                # Stop training when `val_loss` is no longer improving
+                monitor="val_loss",
+                # "no longer improving" being defined as "no better than 1e-2 less"
+                min_delta=1e-2,
+                # "no longer improving" being further defined as "for at least 2 epochs"
+                patience=2,
+                verbose=1,
+            ),
         ]
 
         layer = RNNModel._RNN_TYPE[rnn_type]
@@ -155,7 +172,13 @@ class RNNModel(Model):
         return model
 
     def get_probs(self, method):
-        pass
+        text_generated = self.tokenizer.encode("<sos>" + method).ids
+        input_eval = tf.expand_dims(text_generated, 0)
+
+        logits = self.model(input_eval)
+        probs = tf.nn.softmax(logits)[0].numpy()
+
+        return probs
 
     def generate(self, n, temperature=1.0):
         # Converting our start string to numbers (vectorizing)
@@ -200,8 +223,10 @@ class RNNModel(Model):
         return self.tokenizer(method, return_tensors="tf")
 
     # TODO add tensorboard call back for easy visualization
-    def train(self, dataset, epochs):
+    def train(self, ds_trn, ds_val, epochs):
         self.model.compile(optimizer="adam", loss=_loss)
-        history = self.model.fit(dataset, epochs=epochs, callbacks=self.callbacks)
+        history = self.model.fit(
+            ds_trn, epochs=epochs, callbacks=self.callbacks, validation_data=ds_val
+        )
 
         return history

@@ -336,7 +336,7 @@ nb_path: "nbs/00_data.core.ipynb"
 <span class="n">dataset</span> <span class="o">=</span> <span class="n">convert_df_to_tfds</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">max_length</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
-    <span class="k">assert</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">max_length</span><span class="p">)</span> <span class="o">==</span> <span class="n">shape</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">assert</span> <span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">max_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">shape</span><span class="o">.</span><span class="n">shape</span>
 </pre></div>
 
     </div>

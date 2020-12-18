@@ -322,11 +322,13 @@ def _split_input_target(mthd):
 def convert_df_to_tfds(
     df: pd.DataFrame, tokenizer: Tokenizer, max_length: int, batch_size: int
 ):
-    # TODO: optimize using tfds map function with tokenizer.encode_batch thingy
-    tokenized_mthds = [
-        [tokenizer.encode("<sos>").ids[0]] + tokenizer.encode(mthd).ids
-        for mthd in df.code.values
-    ]
+    tokenized_mthds = []
+    for i in range(0, len(df.code.values), batch_size):
+        batch = df.code.values[i : i + batch_size]
+        batch = [f"<sos>{x}" for x in batch]
+        for x in tokenizer.encode_batch(batch):
+            tokenized_mthds.append(x.ids)
+
     ds = tf.data.Dataset.from_tensor_slices(tokenized_mthds)
     ds = ds.map(_split_input_target).batch(batch_size, drop_remainder=True)
 

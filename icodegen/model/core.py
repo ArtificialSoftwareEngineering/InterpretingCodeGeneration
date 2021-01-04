@@ -62,7 +62,19 @@ class TransformerModel(Model):
         pass
 
     def tokenize(self, method):
-        return self.tokenizer(method, return_tensors="tf")
+        output = {}
+        # encod method and then convert to format that hf models expect
+        encoding = self.tokenizer.encode(method)
+        output["input_ids"] = tf.expand_dims(
+            tf.convert_to_tensor(encoding.ids, dtype=tf.int32), 0
+        )
+        output["attention_mask"] = tf.expand_dims(
+            tf.convert_to_tensor(encoding.attention_mask, dtype=tf.int32), 0
+        )
+
+        return output
+
+    #         return self.tokenizer(method, return_tensors="tf")
 
     def train(self, ds, epochs):
         pass
@@ -92,9 +104,7 @@ class RNNModel(Model):
         self.embedding_dim = embedding_dim
         self.rnn_units = rnn_units
 
-        self.config_name = (
-            f"{rnn_type}_vocab{vocab_size}_embed{embedding_dim}_units{rnn_units}"
-        )
+        self.config_name = f"{rnn_type}_layers{n_layers}_vocab{vocab_size}_embed{embedding_dim}_units{rnn_units}"
         self.out_path = Path(out_path) / self.config_name
         self.out_path.mkdir(exist_ok=True)
         tensorboard_path = self.out_path / "tensorboard_logs"
@@ -171,11 +181,11 @@ class RNNModel(Model):
 
         return model
 
-    def get_probs(self, method):
-        text_generated = self.tokenizer.encode("<sos>" + method).ids
-        input_eval = tf.expand_dims(text_generated, 0)
+    def get_probs(self, inputs):
+        #         ids = self.tokenizer.encode("<sos>" + method).ids
+        #         input_eval = tf.expand_dims(ids, 0)
 
-        logits = self.model(input_eval)
+        logits = self.model(inputs)
         probs = tf.nn.softmax(logits)[0].numpy()
 
         return probs
@@ -220,7 +230,9 @@ class RNNModel(Model):
             json.dump(model_config, f)
 
     def tokenize(self, method):
-        return self.tokenizer(method, return_tensors="tf")
+        ids = self.tokenizer.encode("<sos>" + method).ids
+        inputs = tf.expand_dims(ids, 0)
+        return inputs  # self.tokenizer(method, return_tensors="tf")
 
     # TODO add tensorboard call back for easy visualization
     def train(self, ds_trn, ds_val, epochs):

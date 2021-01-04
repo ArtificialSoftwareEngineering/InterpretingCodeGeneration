@@ -26,8 +26,8 @@ def get_mean_probs(df: pd.DataFrame, model: Model, n: Optional[int] = None):
         n = len(df)
 
     # setup container lists for the number of occurrences and sum of probabilities for each token
-    counts = [0] * len(model.tokenizer)
-    sum_probs = [0.0] * len(model.tokenizer)
+    counts = [0] * model.tokenizer.get_vocab_size()
+    sum_probs = [0.0] * model.tokenizer.get_vocab_size()
     # loop through each method
     for mthd in df.code.values[:n]:
         # token the method and generate the probabilities for the model's predictions
@@ -94,7 +94,7 @@ def _get_dist_probs(
     # WARNING: Careful when using different tokenizers since HF tokenizers lib have diff API then HF transformers lib tokenizers... You will need to update this when using custom model and tokenizer...
 
     # get the distances for the opening and closing tokens
-    toks = model.tokenizer.tokenize(mthd)
+    toks = model.tokenizer.encode(mthd).tokens
     idxs = find_parens(toks, opening, closing)
 
     # get the model probabilities for the given method

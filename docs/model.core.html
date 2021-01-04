@@ -201,6 +201,20 @@ inheritance.</p>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2/2 [==============================] - 2s 795ms/step - loss: 4.6023 - val_loss: 4.5712
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -217,7 +231,7 @@ inheritance.</p>
 
 <span class="n">logits</span> <span class="o">=</span> <span class="n">gru</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">input_eval</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 <span class="n">inputs</span> <span class="o">=</span> <span class="n">gru</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-<span class="n">probs</span> <span class="o">=</span> <span class="n">gru</span><span class="o">.</span><span class="n">get_probs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="n">probs</span> <span class="o">=</span> <span class="n">gru</span><span class="o">.</span><span class="n">get_probs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">probs</span><span class="p">)):</span>
     <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">probs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
@@ -293,6 +307,37 @@ inheritance.</p>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING:absl:Found untraced functions such as gru_cell_3_layer_call_fn, gru_cell_3_layer_call_and_return_conditional_losses, gru_cell_3_layer_call_fn, gru_cell_3_layer_call_and_return_conditional_losses, gru_cell_3_layer_call_and_return_conditional_losses while saving (showing 5 of 5). These functions will not be directly callable after loading.
+WARNING:absl:Found untraced functions such as gru_cell_3_layer_call_fn, gru_cell_3_layer_call_and_return_conditional_losses, gru_cell_3_layer_call_fn, gru_cell_3_layer_call_and_return_conditional_losses, gru_cell_3_layer_call_and_return_conditional_losses while saving (showing 5 of 5). These functions will not be directly callable after loading.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>INFO:tensorflow:Assets written to: /tmp/gru_layers1_vocab100_embed128_units128/assets
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>INFO:tensorflow:Assets written to: /tmp/gru_layers1_vocab100_embed128_units128/assets
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
     {% endraw %}
 
@@ -313,6 +358,21 @@ inheritance.</p>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2/2 - 0s - loss: 4.5712
+2/2 - 1s - loss: 4.5712
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 

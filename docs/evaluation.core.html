@@ -170,18 +170,13 @@ should predict for an entire pandas dataframe.</p>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">NON_NAN_PROBS_MEAN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
     <span class="p">[</span>
-        <span class="mf">2.03460877e-05</span><span class="p">,</span>
-        <span class="mf">1.98268704e-05</span><span class="p">,</span>
-        <span class="mf">2.00206681e-05</span><span class="p">,</span>
-        <span class="mf">2.07059074e-05</span><span class="p">,</span>
-        <span class="mf">2.03566948e-05</span><span class="p">,</span>
-        <span class="mf">2.04673097e-05</span><span class="p">,</span>
-        <span class="mf">2.02906310e-05</span><span class="p">,</span>
-        <span class="mf">2.10315836e-05</span><span class="p">,</span>
+        <span class="mf">2.01237513e-05</span><span class="p">,</span> <span class="mf">1.98944481e-05</span><span class="p">,</span> <span class="mf">2.01449202e-05</span><span class="p">,</span> <span class="mf">2.04353437e-05</span><span class="p">,</span>
+        <span class="mf">2.02043060e-05</span><span class="p">,</span> <span class="mf">2.02826177e-05</span><span class="p">,</span> <span class="mf">2.09888076e-05</span><span class="p">,</span> <span class="mf">2.07051467e-05</span><span class="p">,</span>
+        <span class="mf">1.98100976e-05</span><span class="p">,</span> <span class="mf">2.02152678e-05</span><span class="p">,</span> <span class="mf">2.02035244e-05</span><span class="p">,</span> <span class="mf">2.10283021e-05</span>
     <span class="p">]</span>
 <span class="p">)</span>
-<span class="n">mean_probs</span> <span class="o">=</span> <span class="n">get_mean_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
 
+<span class="n">mean_probs</span> <span class="o">=</span> <span class="n">get_mean_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">trnsfr_model</span><span class="p">)</span>
 <span class="n">non_nan_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mean_probs</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 <span class="n">non_nan_mean_prob</span> <span class="o">=</span> <span class="n">mean_probs</span><span class="p">[</span><span class="n">non_nan_idx</span><span class="p">]</span>
 
@@ -202,26 +197,22 @@ should predict for an entire pandas dataframe.</p>
 
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">tokens</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">NON_NAN_PROBS_MEAN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="mf">1.99270412e-05</span><span class="p">,</span> <span class="mf">1.99168703e-05</span><span class="p">,</span> <span class="mf">1.98815596e-05</span><span class="p">,</span> <span class="mf">1.99057849e-05</span><span class="p">,</span>
+        <span class="mf">1.98800869e-05</span><span class="p">,</span> <span class="mf">1.98893995e-05</span><span class="p">,</span> <span class="mf">1.98797388e-05</span><span class="p">,</span> <span class="mf">1.98960342e-05</span><span class="p">,</span>
+        <span class="mf">1.99086674e-05</span><span class="p">,</span> <span class="mf">1.98605580e-05</span><span class="p">,</span> <span class="mf">1.98807957e-05</span><span class="p">,</span> <span class="mf">1.98842057e-05</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">mean_probs</span> <span class="o">=</span> <span class="n">get_mean_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">gru_model</span><span class="p">)</span>
+<span class="n">non_nan_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mean_probs</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">non_nan_mean_prob</span> <span class="o">=</span> <span class="n">mean_probs</span><span class="p">[</span><span class="n">non_nan_idx</span><span class="p">]</span>
+
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">non_nan_mean_prob</span><span class="p">,</span> <span class="n">NON_NAN_PROBS_MEAN</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;test&#39;]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -314,7 +305,37 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
         <span class="p">],</span>
     <span class="p">}</span>
 <span class="p">)</span>
-<span class="n">df_dist</span> <span class="o">=</span> <span class="n">mean_dist_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">opening</span><span class="o">=</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="n">closing</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+<span class="n">df_dist</span> <span class="o">=</span> <span class="n">mean_dist_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">gru_model</span><span class="p">,</span> <span class="n">opening</span><span class="o">=</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="n">closing</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">DIST_DF</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;dist&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+        <span class="s2">&quot;mean_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">1.98822217e-05</span><span class="p">,</span>
+            <span class="mf">1.97613608e-05</span><span class="p">,</span>
+            <span class="mf">1.97816771e-05</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">df_dist</span> <span class="o">=</span> <span class="n">mean_dist_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">trnsfr_model</span><span class="p">,</span> <span class="n">opening</span><span class="o">=</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="n">closing</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
@@ -399,8 +420,8 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cross_entropy_losses</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">mthd</span> <span class="ow">in</span> <span class="n">df_fake</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-    <span class="n">inputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">mthd</span><span class="p">)</span>
-    <span class="n">probs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_probs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">gru_model</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">mthd</span><span class="p">)</span>
+    <span class="n">probs</span> <span class="o">=</span> <span class="n">gru_model</span><span class="o">.</span><span class="n">get_probs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
 
     <span class="n">losses</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">sparse_categorical_crossentropy</span><span class="p">(</span>
         <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">],</span> <span class="n">probs</span>
@@ -408,7 +429,37 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
     <span class="n">cross_entropy_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
 
 <span class="n">CROSS_ENTROPY_MEAN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">cross_entropy_losses</span><span class="p">))</span>
-<span class="n">mean_cross_entropy</span> <span class="o">=</span> <span class="n">get_mean_cross_entropy</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="n">mean_cross_entropy</span> <span class="o">=</span> <span class="n">get_mean_cross_entropy</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">gru_model</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">CROSS_ENTROPY_MEAN</span><span class="p">,</span> <span class="n">mean_cross_entropy</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cross_entropy_losses</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">mthd</span> <span class="ow">in</span> <span class="n">df_fake</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+    <span class="n">inputs</span> <span class="o">=</span> <span class="n">trnsfr_model</span><span class="o">.</span><span class="n">tokenize</span><span class="p">(</span><span class="n">mthd</span><span class="p">)</span>
+    <span class="n">probs</span> <span class="o">=</span> <span class="n">trnsfr_model</span><span class="o">.</span><span class="n">get_probs</span><span class="p">(</span><span class="n">inputs</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+
+    <span class="n">losses</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">sparse_categorical_crossentropy</span><span class="p">(</span>
+        <span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">],</span> <span class="n">probs</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="n">cross_entropy_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">losses</span><span class="p">)</span>
+
+<span class="n">CROSS_ENTROPY_MEAN</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">cross_entropy_losses</span><span class="p">))</span>
+<span class="n">mean_cross_entropy</span> <span class="o">=</span> <span class="n">get_mean_cross_entropy</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">trnsfr_model</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">CROSS_ENTROPY_MEAN</span><span class="p">,</span> <span class="n">mean_cross_entropy</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span>
 </pre></div>

@@ -64,7 +64,7 @@ class TransformerModel(Model):
     def tokenize(self, method):
         output = {}
         # encod method and then convert to format that hf models expect
-        encoding = self.tokenizer.encode(method)
+        encoding = self.tokenizer.encode("<sos>" + method)
         output["input_ids"] = tf.expand_dims(
             tf.convert_to_tensor(encoding.ids, dtype=tf.int32), 0
         )
@@ -185,8 +185,8 @@ class RNNModel(Model):
         #         ids = self.tokenizer.encode("<sos>" + method).ids
         #         input_eval = tf.expand_dims(ids, 0)
 
-        logits = self.model(inputs)
-        probs = tf.nn.softmax(logits)[0].numpy()
+        logits = self.model(inputs["input_ids"])
+        probs = tf.nn.softmax(logits)# [0].numpy()
 
         return probs
 
@@ -230,9 +230,18 @@ class RNNModel(Model):
             json.dump(model_config, f)
 
     def tokenize(self, method):
-        ids = self.tokenizer.encode("<sos>" + method).ids
-        inputs = tf.expand_dims(ids, 0)
-        return inputs  # self.tokenizer(method, return_tensors="tf")
+#         ids = self.tokenizer.encode("<sos>" + method).ids
+#         inputs = tf.expand_dims(ids, 0)
+        output = {}
+        # encod method and then convert to format that hf models expect
+        encoding = self.tokenizer.encode("<sos>" + method)
+        output["input_ids"] = tf.expand_dims(
+            tf.convert_to_tensor(encoding.ids, dtype=tf.int32), 0
+        )
+        output["attention_mask"] = tf.expand_dims(
+            tf.convert_to_tensor(encoding.attention_mask, dtype=tf.int32), 0
+        )
+        return output  # self.tokenizer(method, return_tensors="tf")
 
     # TODO add tensorboard call back for easy visualization
     def train(self, ds_trn, ds_val, epochs):

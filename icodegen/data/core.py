@@ -2,13 +2,14 @@
 
 __all__ = ['remove_non_ascii', 'beautify_code', 'extra_tokens', 'java_reserved_tokens', 'java_operator_tokens',
            'java_structural_tokens', 'java_extra_tokens', 'java_special_tokens', 'replace_special_tokens',
-           'train_tokenizer']
+           'train_tokenizer', 'convert_df_to_tfds']
 
 # Cell
 import icodegen
 import re
 
 import pandas as pd
+import tensorflow as tf
 
 from pathlib import Path
 from subprocess import CalledProcessError, check_output
@@ -261,6 +262,7 @@ def replace_special_tokens(
 def train_tokenizer(
     df: pd.DataFrame,
     spec_toks: Dict[str, str],
+    max_length: int,
     n: Optional[int] = None,
     vocab_sz: Optional[int] = 10_000,
     min_freq: Optional[int] = 2,
@@ -289,7 +291,7 @@ def train_tokenizer(
     tokenizer = Tokenizer(models.BPE())
 
     # customize pre-tokenization and decoding
-    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=True)
+    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(add_prefix_space=False)
     tokenizer.decoder = decoders.ByteLevel()
     tokenizer.post_processor = processors.ByteLevel(trim_offsets=True)
 
@@ -300,9 +302,34 @@ def train_tokenizer(
         special_tokens=["<pad>", "<sos>", "<eos>"] + list(spec_toks.keys()),
     )
     tokenizer.train(trainer, [str(tmp_path / "tmp_tokenize.txt")])
+    tokenizer.enable_padding(length=max_length, pad_token="<pad>")
+    tokenizer.enable_truncation(max_length)
 
     # save tokenizer if output path given
     if output is not None:
         tokenizer.save(output, pretty=True)
 
     return tokenizer
+
+# Cell
+def _split_input_target(mthd):
+    input_text = mthd[:-1]
+    target_text = mthd[1:]
+
+    return input_text, target_text
+
+
+def convert_df_to_tfds(
+    df: pd.DataFrame, tokenizer: Tokenizer, max_length: int, batch_size: int
+):
+    tokenized_mthds = []
+    for i in range(0, len(df.code.values), batch_size):
+        batch = df.code.values[i : i + batch_size]
+        batch = [f"<sos>{x}" for x in batch]
+        for x in tokenizer.encode_batch(batch):
+            tokenized_mthds.append(x.ids)
+
+    ds = tf.data.Dataset.from_tensor_slices(tokenized_mthds)
+    ds = ds.map(_split_input_target).batch(batch_size, drop_remainder=True)
+
+    return ds

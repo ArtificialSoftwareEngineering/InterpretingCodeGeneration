@@ -49,6 +49,9 @@ def get_mean_probs(df: pd.DataFrame, model: Model, n: Optional[int] = None):
     nans.fill(np.nan)
     mean_probs = np.divide(sum_probs, counts, out=nans, where=counts != 0)
     # TODO: convert to dictionary with keys as tokens
+    mean_probs = {
+        model.tokenizer.id_to_token(i): mean_probs[i] for i in range(len(mean_probs))
+    }
     return mean_probs
 
 # Cell

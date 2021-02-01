@@ -9,6 +9,7 @@ import tensorflow as tf
 
 from collections import Counter, defaultdict
 from ..model.core import Model
+from scipy import stats
 from typing import Dict, List, Optional
 
 # Cell
@@ -186,6 +187,11 @@ def get_mean_cross_entropy(df: pd.DataFrame, model: Model, n: Optional[int] = No
         ).numpy()
         cross_entropy_losses.append(losses)
 
-    # flatten list of cross entropies and take the mean
+    # flatten list of cross entropies and calculate the mean, median, std, and mad
     cross_entropy_losses = np.concatenate(cross_entropy_losses)
-    return np.mean(cross_entropy_losses)
+    return {
+        "mean": np.mean(cross_entropy_losses),
+        "median": np.median(cross_entropy_losses),
+        "std": np.std(cross_entropy_losses),
+        "mad": stats.median_abs_deviation(cross_entropy_losses),
+    }

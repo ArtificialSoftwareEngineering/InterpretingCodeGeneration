@@ -1,7 +1,6 @@
 #! /bin/sh
 
-DATA=$1
-PORT=$2
+PORT=$1
 TAG=icodegen
 
 if [ $# -eq 3 ]; then
@@ -15,8 +14,7 @@ fi
 # Run the docker container. Add additional -v if
 # you need to mount more volumes into the container
 # Also, make sure to edit the ports to fix your needs.
-docker run -d --gpus all -v $(pwd):/tf/main -v $DATA:/tf/data \
-	-u $(id -u):$(id -g) -p $PORT:8888 --name $(whoami)-$TAG $TAG
-#docker run -d --gpus all -it -p $PORT:8888 -v $(pwd):/home/jovyan/work		\
-#	-v $DATA:/home/jovyan/data -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes	\
-#	--user root --restart always --name $TAG $TAG
+docker run --gpus all -d -it -p $PORT:8888 -v $(pwd):/home/jovyan/work \
+  -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" \
+  -e NB_GID="$(id -g)" --user root --restart always --name $TAG \
+  semerulab/datascience:dev-cuda101

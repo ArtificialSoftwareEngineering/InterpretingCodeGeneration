@@ -12,7 +12,7 @@ fi
 
 
 # docker run --gpus all -d -it -p $PORT:8888 -u $(id -u):$(id -g)
-docker run --gpus all -d -u $(id -u):$(id -g) -v $(pwd):/tf/main -p $PORT:8888 $TAG
+docker run --gpus all -d -u $(id -u):$(id -g) -v $(pwd):/tf/main -p $PORT:8888 --name $TAG-$(whoami) $TAG
 # Run the docker container. Add additional -v if
 # you need to mount more volumes into the container
 # Also, make sure to edit the ports to fix your needs.

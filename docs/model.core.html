@@ -54,7 +54,7 @@ nb_path: "nbs/02_model.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="Model" class="doc_header"><code>class</code> <code>Model</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/model/core.py#L21" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Model</code>(<strong><code>tokenizer</code></strong>, <strong><code>model</code></strong>) :: <code>ABC</code></p>
+<h2 id="Model" class="doc_header"><code>class</code> <code>Model</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/model/core.py#L26" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>Model</code>(<strong><code>tokenizer</code></strong>, <strong><code>model</code></strong>) :: <code>ABC</code></p>
 </blockquote>
 <p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
@@ -87,7 +87,7 @@ inheritance.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="TransformerModel" class="doc_header"><code>class</code> <code>TransformerModel</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/model/core.py#L47" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformerModel</code>(<strong><code>tokenizer</code></strong>, <strong><code>model</code></strong>) :: <a href="/icodegen/model.core.html#Model"><code>Model</code></a></p>
+<h2 id="TransformerModel" class="doc_header"><code>class</code> <code>TransformerModel</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/model/core.py#L52" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>TransformerModel</code>(<strong><code>tokenizer</code></strong>, <strong><code>model</code></strong>) :: <a href="/icodegen/model.core.html#Model"><code>Model</code></a></p>
 </blockquote>
 <p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
@@ -120,7 +120,7 @@ inheritance.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h2 id="RNNModel" class="doc_header"><code>class</code> <code>RNNModel</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/model/core.py#L83" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNModel</code>(<strong><code>rnn_type</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>vocab_size</code></strong>, <strong><code>embedding_dim</code></strong>, <strong><code>rnn_units</code></strong>, <strong><code>batch_size</code></strong>, <strong><code>out_path</code></strong>, <strong><code>tokenizer</code></strong>) :: <a href="/icodegen/model.core.html#Model"><code>Model</code></a></p>
+<h2 id="RNNModel" class="doc_header"><code>class</code> <code>RNNModel</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/model/core.py#L88" class="source_link" style="float:right">[source]</a></h2><blockquote><p><code>RNNModel</code>(<strong><code>rnn_type</code></strong>, <strong><code>n_layers</code></strong>, <strong><code>vocab_size</code></strong>, <strong><code>embedding_dim</code></strong>, <strong><code>rnn_units</code></strong>, <strong><code>batch_size</code></strong>, <strong><code>out_path</code></strong>, <strong><code>tokenizer</code></strong>) :: <a href="/icodegen/model.core.html#Model"><code>Model</code></a></p>
 </blockquote>
 <p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
@@ -207,7 +207,7 @@ inheritance.</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2/2 [==============================] - 2s 795ms/step - loss: 4.6023 - val_loss: 4.5712
+<pre>2/2 [==============================] - 3s 1s/step - loss: 4.6008 - val_loss: 4.5705
 </pre>
 </div>
 </div>
@@ -313,8 +313,8 @@ inheritance.</p>
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>WARNING:absl:Found untraced functions such as gru_cell_3_layer_call_fn, gru_cell_3_layer_call_and_return_conditional_losses, gru_cell_3_layer_call_fn, gru_cell_3_layer_call_and_return_conditional_losses, gru_cell_3_layer_call_and_return_conditional_losses while saving (showing 5 of 5). These functions will not be directly callable after loading.
-WARNING:absl:Found untraced functions such as gru_cell_3_layer_call_fn, gru_cell_3_layer_call_and_return_conditional_losses, gru_cell_3_layer_call_fn, gru_cell_3_layer_call_and_return_conditional_losses, gru_cell_3_layer_call_and_return_conditional_losses while saving (showing 5 of 5). These functions will not be directly callable after loading.
+<pre>WARNING:absl:Found untraced functions such as gru_cell_layer_call_and_return_conditional_losses, gru_cell_layer_call_fn, gru_cell_layer_call_fn, gru_cell_layer_call_and_return_conditional_losses, gru_cell_layer_call_and_return_conditional_losses while saving (showing 5 of 5). These functions will not be directly callable after loading.
+WARNING:absl:Found untraced functions such as gru_cell_layer_call_and_return_conditional_losses, gru_cell_layer_call_fn, gru_cell_layer_call_fn, gru_cell_layer_call_and_return_conditional_losses, gru_cell_layer_call_and_return_conditional_losses while saving (showing 5 of 5). These functions will not be directly callable after loading.
 </pre>
 </div>
 </div>
@@ -367,8 +367,124 @@ WARNING:absl:Found untraced functions such as gru_cell_3_layer_call_fn, gru_cell
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>2/2 - 0s - loss: 4.5712
-2/2 - 1s - loss: 4.5712
+<pre>2/2 - 0s - loss: 4.5705
+2/2 - 1s - loss: 4.5705
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="train" class="doc_header"><code>train</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/model/core.py#L320" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>train</code>(<strong><code>data_path</code></strong>, <strong><code>out_path</code></strong>, <strong><code>epochs</code></strong>=<em><code>64</code></em>, <strong><code>max_length</code></strong>=<em><code>300</code></em>, <strong><code>batch_size</code></strong>=<em><code>64</code></em>, <strong><code>n</code></strong>=<em><code>None</code></em>)</p>
+</blockquote>
+<p>Function for training models related to the library.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp/data/codesearchnet&quot;</span><span class="p">)</span>
+<span class="n">models_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp/models&quot;</span><span class="p">)</span>
+<span class="n">rnn_path</span> <span class="o">=</span> <span class="n">models_path</span> <span class="o">/</span> <span class="s2">&quot;rnn_layers1_vocab10000_embed256_units1024&quot;</span>
+<span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">MAX_LEN</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">BS</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">_RNN_CONFIGs</span> <span class="o">=</span> <span class="p">[</span><span class="n">VANILLA_CONFIG</span><span class="p">]</span>
+
+<span class="n">train</span><span class="p">(</span>
+    <span class="n">data_path</span><span class="o">=</span><span class="n">data_path</span><span class="p">,</span>
+    <span class="n">out_path</span><span class="o">=</span><span class="n">models_path</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="n">EPOCHS</span><span class="p">,</span>
+    <span class="n">max_length</span><span class="o">=</span><span class="n">MAX_LEN</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">BS</span><span class="p">,</span>
+    <span class="n">n</span><span class="o">=</span><span class="n">N</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">assert</span> <span class="p">(</span><span class="n">models_path</span> <span class="o">/</span> <span class="s2">&quot;tokenizer.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">rnn_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">rnn_path</span> <span class="o">/</span> <span class="s2">&quot;assets&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">rnn_path</span> <span class="o">/</span> <span class="s2">&quot;model_config.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">rnn_path</span> <span class="o">/</span> <span class="s2">&quot;saved_model.pb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">rnn_path</span> <span class="o">/</span> <span class="s2">&quot;variables&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">EPOCHS</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rnn_path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.index&quot;</span><span class="p">)))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>INFO:root:Loading tokenizer from /tmp/models/tokenizer.json.
+INFO:root:Starting the training of all RNN based models.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Epoch 1/2
+12/12 [==============================] - 8s 656ms/step - loss: 7.2490 - val_loss: 5.1655
+Epoch 2/2
+12/12 [==============================] - 7s 625ms/step - loss: 5.2661 - val_loss: 5.2514
+INFO:tensorflow:Assets written to: /tmp/models/rnn_layers1_vocab10000_embed256_units1024/assets
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>INFO:tensorflow:Assets written to: /tmp/models/rnn_layers1_vocab10000_embed256_units1024/assets
+INFO:root:Starting the training of all Transformer based models.
 </pre>
 </div>
 </div>

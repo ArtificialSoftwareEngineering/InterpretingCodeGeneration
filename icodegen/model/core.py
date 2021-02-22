@@ -7,9 +7,11 @@ __all__ = ['logger', 'Model', 'TransformerModel', 'RNNModel', 'VANILLA_CONFIG', 
 import json
 import logging
 
+import pandas as pd
 import tensorflow as tf
 
 from abc import ABC, abstractmethod
+from ..data.core import convert_df_to_tfds, java_special_tokens, train_tokenizer
 from pathlib import Path
 from tokenizers import Tokenizer
 
@@ -238,7 +240,7 @@ class RNNModel(Model):
         #         ids = self.tokenizer.encode("<sos>" + method).ids
         #         inputs = tf.expand_dims(ids, 0)
         output = {}
-        # encod method and then convert to format that hf models expect
+        # encode method and then convert to format that hf models expect
         encoding = self.tokenizer.encode("<sos>" + method)
         output["input_ids"] = tf.expand_dims(
             tf.convert_to_tensor(encoding.ids, dtype=tf.int32), 0

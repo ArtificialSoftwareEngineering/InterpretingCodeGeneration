@@ -14,7 +14,7 @@ from ..data.transforms import (
     java_comment_remover,
     transform_df,
 )
-from ..model.core import Model
+from ..model.core import Model, RNNModel
 from scipy import stats
 from typing import Dict, List, Optional
 
@@ -225,19 +225,51 @@ def _get_metrics(df, model):
     }
 
 
-def _long_range(data_dir, model, n=None):
+# def _long_range(data_dir, model, n=None):
+#     long_range_results = {}
+
+#     df_buggy = pd.read_json(data_dir / "buggy.jsonl", orient="records", lines=True)[:n]
+#     long_range_results["buggy"] = _get_metrics(df_buggy, model)
+#     del df_buggy
+
+#     df_fixed = pd.read_json(data_dir / "fixed.jsonl", orient="records", lines=True)[:n]
+#     long_range_results["fixed"] = _get_metrics(df_fixed, model)
+#     del df_fixed
+
+#     df_codesearchnet = pd.read_json(
+#         data_dir / "codesearchnet_java" / "test.jsonl", orient="records", lines=True
+#     )[:n]
+#     long_range_results["codesearchnet_original"] = _get_metrics(df_codesearchnet, model)
+
+#     for transform in _TRANSFORMs:
+#         df_transformed = transform_df(df_codesearchnet, _TRANSFORMs[transform])
+#         long_range_results["codesearchnet_" + transform] = _get_metrics(
+#             df_transformed, model
+#         )
+#         del df_transformed
+
+#     return long_range_results
+
+
+def _long_range(bigclone_path, bugfix_path, codesearchnet_path, model, n=None):
     long_range_results = {}
 
-    df_buggy = pd.read_json(data_dir / "buggy.jsonl", orient="records", lines=True)[:n]
-    long_range_results["buggy"] = _get_metrics(df_buggy, model)
-    del df_buggy
+    # TODO add bigclone data
 
-    df_fixed = pd.read_json(data_dir / "fixed.jsonl", orient="records", lines=True)[:n]
+    df_buggy = pd.read_json(bugfix_path / "buggy.jsonl", orient="records", lines=True)[
+        :n
+    ]
+    long_range_results["buggy"] = _get_metrics(df_buggy, model)
+
+    df_fixed = pd.read_json(bugfix_path / "fixed.jsonl", orient="records", lines=True)[
+        :n
+    ]
     long_range_results["fixed"] = _get_metrics(df_fixed, model)
-    del df_fixed
 
     df_codesearchnet = pd.read_json(
-        data_dir / "codesearchnet_java" / "test.jsonl", orient="records", lines=True
+        codesearchnet_path / "codesearchnet_java" / "test.jsonl",
+        orient="records",
+        lines=True,
     )[:n]
     long_range_results["codesearchnet_original"] = _get_metrics(df_codesearchnet, model)
 
@@ -246,7 +278,6 @@ def _long_range(data_dir, model, n=None):
         long_range_results["codesearchnet_" + transform] = _get_metrics(
             df_transformed, model
         )
-        del df_transformed
 
     return long_range_results
 
@@ -263,15 +294,22 @@ def evaluate(data_path, model_path):
     # to differentiate them
     for m_path in model_path.glob("*/"):
         model = None
+        print(m_path)
         if m_path.name == "Transformer":
             model = TransformerModel.from_path(m_path)
-        elif m_path.name == "GRU":
+        elif "gru" in m_path.name:
             model = RNNModel.from_path(m_path)
         elif m_path.name == "RNN":
             pass
 
+        bigclone_path = data_path / "bigclonebenchmark"
+        bugfix_path = data_path / "bug_fix"
+        codesearchnet_path = data_path / "codesearchnet"
+
         # Long-Range Interactions
-        results[m_path.name]["long_range"] = _long_range(data_path, model)
+        results[m_path.name]["long_range"] = _long_range(
+            bigclone_path, bugfix_path, codesearchnet_path, model
+        )
 
     return results
     # Counterfactuals

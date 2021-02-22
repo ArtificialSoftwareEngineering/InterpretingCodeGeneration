@@ -20,10 +20,7 @@ import tensorflow as tf
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from subprocess import CalledProcessError, check_output
-from tokenizers import (
-    Tokenizer, models, pre_tokenizers, decoders, trainers,
-    processors
-)
+from tokenizers import Tokenizer, models, pre_tokenizers, decoders, trainers, processors
 from typing import Dict, Optional
 
 logger = logging.getLogger()
@@ -52,14 +49,14 @@ def _download_data(out_path):
         str(bigclone_path / "bigclonebenchmark.zip"),
         postprocess=gdown.extractall,
     )
-#     gdown.download(
-#         URLs["bigclonebenchmark_lg"],
-#         str(bigclone_path / "bigclonebenchmark_lg.csv")
-#     )
-#     gdown.download(
-#         URLs["bigclonebenchmark_sm"],
-#         str(bigclone_path / "bigclonebenchmark_sm.csv")
-#     )
+    #     gdown.download(
+    #         URLs["bigclonebenchmark_lg"],
+    #         str(bigclone_path / "bigclonebenchmark_lg.csv")
+    #     )
+    #     gdown.download(
+    #         URLs["bigclonebenchmark_sm"],
+    #         str(bigclone_path / "bigclonebenchmark_sm.csv")
+    #     )
 
     # Download Bug Fix Pairs
     logging.info("Downloading and extracting Bug Fix Pairs dataset.")
@@ -80,10 +77,13 @@ def _download_data(out_path):
     # kamran kausar (https://stackoverflow.com/users/3486460/kamran-kausar)
     logging.info("Downloading and extracting CodeSearchNet Challenge dataset.")
     codesearchnet_path = out_path / "codesearchnet"
-    codesearchnet_path.mkdir(parents=True, exist_ok=True)
-    r = requests.get(URLs["codesearchnet_java"])
-    z = zipfile.ZipFile(io.BytesIO(r.content))
-    z.extractall(codesearchnet_path / "codesearchnet_java")
+    if not codesearchnet_path.exists():
+        codesearchnet_path.mkdir(parents=True, exist_ok=True)
+        r = requests.get(URLs["codesearchnet_java"])
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(codesearchnet_path / "codesearchnet_java")
+    else:
+        logging.info(f"File exists: {codesearchnet_path}")
 
 # Cell
 def _isASCII(mthd: str) -> bool:
@@ -393,7 +393,7 @@ def convert_df_to_tfds(
 ):
     tokenized_mthds = []
     for i in range(0, len(df.code.values), batch_size):
-        batch = df.code.values[i:i + batch_size]
+        batch = df.code.values[i : i + batch_size]
         batch = [f"<sos>{x}" for x in batch]
         for x in tokenizer.encode_batch(batch):
             tokenized_mthds.append(x.ids)

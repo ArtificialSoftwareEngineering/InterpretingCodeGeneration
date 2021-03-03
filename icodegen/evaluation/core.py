@@ -156,14 +156,35 @@ def mean_dist_probs(
         dist_keys.extend(probs.keys())
     # merge dictionaries across methods by taking the mean of probs with the same distance. Modified from https://stackoverflow.com/a/10461916/5768407,
     # users georg https://stackoverflow.com/users/989121/georg and Rémy Hosseinkhan Boucher https://stackoverflow.com/users/12149730/r%c3%a9my-hosseinkhan-boucher
-    dist_probs = {
+    mean_dist_probs = {
         k: np.nanmean(np.array([probs.get(k, np.nan) for probs in dist_probs]))
+        for k in set(dist_keys)
+    }
+    std_dist_probs = {
+        k: np.nanstd(np.array([probs.get(k, np.nan) for probs in dist_probs]))
+        for k in set(dist_keys)
+    }
+
+    med_dist_probs = {
+        k: np.nanmedian(np.array([probs.get(k, np.nan) for probs in dist_probs]))
+        for k in set(dist_keys)
+    }
+    mad_dist_probs = {
+        k: stats.median_abs_deviation(
+            np.array([probs.get(k, np.nan) for probs in dist_probs]), nan_policy="omit"
+        )
         for k in set(dist_keys)
     }
     # TODO: convert to dictionary
     df_dist = (
         pd.DataFrame(
-            {"dist": list(dist_probs.keys()), "mean_prob": list(dist_probs.values())}
+            {
+                "dist": list(mean_dist_probs.keys()),
+                "mean_prob": list(mean_dist_probs.values()),
+                "std_prob": list(std_dist_probs.values()),
+                "med_prob": list(med_dist_probs.values()),
+                "mad_prob": list(mad_dist_probs.values()),
+            }
         )
         .sort_values("dist")
         .reset_index(drop=True)

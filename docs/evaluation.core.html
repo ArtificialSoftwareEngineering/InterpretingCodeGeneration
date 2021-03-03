@@ -297,12 +297,30 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
             <span class="mf">1.97613608e-05</span><span class="p">,</span>
             <span class="mf">1.97816771e-05</span><span class="p">,</span>
         <span class="p">],</span>
+        <span class="s2">&quot;std_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">4.93400876e-09</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;med_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">2.04683793e-05</span><span class="p">,</span>
+            <span class="mf">2.07205376e-05</span><span class="p">,</span>
+            <span class="mf">1.97817026e-05</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;mad_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">4.93400876e-09</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+        <span class="p">],</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="n">df_dist</span> <span class="o">=</span> <span class="n">mean_dist_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">gru_model</span><span class="p">,</span> <span class="n">opening</span><span class="o">=</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="n">closing</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">std_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">std_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">med_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">med_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mad_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mad_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -327,12 +345,30 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
             <span class="mf">1.97613608e-05</span><span class="p">,</span>
             <span class="mf">1.97816771e-05</span><span class="p">,</span>
         <span class="p">],</span>
+        <span class="s2">&quot;std_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">4.93400876e-09</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;med_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">2.04683793e-05</span><span class="p">,</span>
+            <span class="mf">2.07205376e-05</span><span class="p">,</span>
+            <span class="mf">1.97817026e-05</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;mad_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">4.93400876e-09</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+        <span class="p">],</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="n">df_dist</span> <span class="o">=</span> <span class="n">mean_dist_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">trnsfr_model</span><span class="p">,</span> <span class="n">opening</span><span class="o">=</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="n">closing</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">std_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">std_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">med_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">med_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mad_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mad_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -380,7 +416,7 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_mean_cross_entropy" class="doc_header"><code>get_mean_cross_entropy</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L174" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mean_cross_entropy</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>model</code></strong>:<a href="/icodegen/model.core.html#Model"><code>Model</code></a>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>)</p>
+<h4 id="get_mean_cross_entropy" class="doc_header"><code>get_mean_cross_entropy</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L195" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mean_cross_entropy</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>model</code></strong>:<a href="/icodegen/model.core.html#Model"><code>Model</code></a>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get the mean cross entropy for a model on an entire pandas dataframe</p>
 <p>:param df: the pandas dataframe containing each method to have the model predict on
@@ -495,7 +531,7 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="evaluate" class="doc_header"><code>evaluate</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L289" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>evaluate</code>(<strong><code>data_path</code></strong>, <strong><code>model_path</code></strong>)</p>
+<h4 id="evaluate" class="doc_header"><code>evaluate</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L310" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>evaluate</code>(<strong><code>data_path</code></strong>, <strong><code>model_path</code></strong>)</p>
 </blockquote>
 <p>Function for evaluating models related to the library.</p>
 

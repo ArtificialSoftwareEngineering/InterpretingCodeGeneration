@@ -309,17 +309,10 @@ GRU_CONFIG_5 = {
     "rnn_units": 2_048,
 }
 
-_RNN_CONFIGs = [
-    VANILLA_CONFIG,
-    GRU_CONFIG_1,
-    GRU_CONFIG_2,
-    GRU_CONFIG_3,
-    GRU_CONFIG_4,
-    GRU_CONFIG_5,
-]
-
 # Cell
-def train(data_path, out_path, epochs=64, max_length=300, batch_size=64, n=None):
+def train(
+    data_path, out_path, epochs=64, max_length=300, batch_size=64, configs=[], n=None
+):
     """Function for training models related to the library."""
     out_path.mkdir(exist_ok=True)
 
@@ -389,7 +382,7 @@ def train(data_path, out_path, epochs=64, max_length=300, batch_size=64, n=None)
 
     logging.info("Starting the training of all RNN based models.")
     # Train RNN based models
-    for config in _RNN_CONFIGs:
+    for config in configs:
         rnn_model = RNNModel(
             config["rnn_type"],
             config["n_layers"],

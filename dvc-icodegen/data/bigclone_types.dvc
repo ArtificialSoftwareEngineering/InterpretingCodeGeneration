@@ -1,0 +1,5 @@
+outs:
+- md5: af04fb563a4e6cf5bb47c0ef8c4960f5.dir
+  size: 35212104
+  nfiles: 3
+  path: bigclone_types

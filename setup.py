@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 from packaging.version import parse
 from configparser import ConfigParser
 import setuptools
 assert parse(setuptools.__version__)>=parse('36.2')
+=======
+from pkg_resources import parse_version
+from configparser import ConfigParser
+import setuptools
+assert parse_version(setuptools.__version__)>=parse_version('36.2')
+>>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
 
 # note: all settings are in settings.ini; edit there, not here
 config = ConfigParser(delimiters=['='])
@@ -33,10 +40,18 @@ setuptools.setup(
         'License :: ' + lic[1],
         'Natural Language :: ' + cfg['language'].title(),
     ] + ['Programming Language :: Python :: '+o for o in py_versions[py_versions.index(min_python):]],
+<<<<<<< HEAD
     url = 'https://github.com/{}/{}'.format(cfg['user'],cfg['lib_name']),
     packages = setuptools.find_packages(),
     include_package_data = True,
     install_requires = requirements,
+=======
+    url = cfg['git_url'],
+    packages = setuptools.find_packages(),
+    include_package_data = True,
+    install_requires = requirements,
+    dependency_links = cfg.get('dep_links','').split(),
+>>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
     python_requires  = '>=' + cfg['min_python'],
     long_description = open('README.md').read(),
     long_description_content_type = 'text/markdown',

@@ -32,7 +32,11 @@
             });
 
             // activate menu items where href is matching to current page
+<<<<<<< HEAD
             $("#mysidebar a[href='" + location.pathname.match(/\/([^\/]*)$/)[1] + "']")
+=======
+            $("#mysidebar a[href='" + location.pathname.match(/(\/[^\/]*)$/)[1] + "']")
+>>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
                 .parents('li').addClass('active')
                 .parents('ul').css('display', 'block');
         });

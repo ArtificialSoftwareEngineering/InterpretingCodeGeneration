@@ -1,8 +1,4 @@
 [core]
-    remote = localsemeru
-['remote "tower2remote"']
-    url = ssh://semeru@rocco.cs.wm.edu:6174/mnt/data/icode_gen/dvc-icodegen
-    password = semerulab2018
-    port = 6174
-['remote "localsemeru"']
-    url = /home/semeru/icode_gen/dvc-icodegen
+    remote = localremote
+['remote "localremote"']
+    url = /tf/data/dvc-icodegen

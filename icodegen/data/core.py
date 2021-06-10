@@ -2,7 +2,8 @@
 
 __all__ = ['logger', 'URLs', 'remove_non_ascii', 'beautify_code', 'extra_tokens', 'java_reserved_tokens',
            'java_operator_tokens', 'java_structural_tokens', 'java_extra_tokens', 'java_special_tokens',
-           'replace_special_tokens', 'train_tokenizer', 'convert_df_to_tfds', 'process_data']
+           'replace_special_tokens', 'replace_spec_toks_to_original', '__replace_tokenizer_toks',
+           'replace_tokenizer_toks', 'train_tokenizer', 'convert_df_to_tfds', 'process_data', 'process_java_df']
 
 # Cell
 import gdown
@@ -317,6 +318,66 @@ def replace_special_tokens(
     return df
 
 # Cell
+
+def _replace_spec_toks(mthd: str, spec_toks: Dict[str, str]) -> str:
+    """
+    Performs the replacement of special tokens by the original ones
+    """
+
+    # Add special tokenizer tokens -> deleted for code analysis
+    spec_toks['<bos>'] = ""
+    spec_toks['<eos>'] = ""
+    spec_toks['<pad>'] = ""
+
+    spec_toks = dict(
+        (re.escape(k), v)
+        for k, v in sorted(
+            spec_toks.items(), key=lambda x: len(x[1]), reverse=True
+        )
+    )
+    # construct regex pattern for finding all special tokens in a method
+    pattern = re.compile("|".join(spec_toks.keys()))
+    # replace all special tokens in a method
+    mthd = pattern.sub(lambda m: spec_toks[re.escape(m.group(0))], mthd)
+
+    mthd = __replace_tokenizer_toks(mthd)
+    return mthd
+
+def replace_spec_toks_to_original(df: pd.DataFrame, spec_toks: Dict[str, str],
+                        n: Optional[int] = None) -> pd.DataFrame:
+    if n is None:
+        n = len(df)
+    df = df.iloc[:n].copy()
+    df.code = df.code.apply(lambda m: _replace_spec_toks(m, spec_toks))
+    return df
+
+# Cell
+
+def __replace_tokenizer_toks(code_snippet: str) -> str:
+    """
+    Function to replace special tokens introduced by the tokenizer/model (bos, eos, pad)
+    :param code_snippet: String representing the code snippet
+    :return: String containing the clean string
+    """
+    pattern = re.compile("|".join(["<pad>", "<sos>", "<eos>"]))
+
+    clean_snippet = pattern.sub("", code_snippet)
+    return clean_snippet
+
+def replace_tokenizer_toks(df: pd.DataFrame, n: Optional[int]=None) -> pd.DataFrame:
+    """
+    Function to replreace
+    :param df: Pandas DataFrame containing the collection of code snippets
+    :return: Clean DataFrame
+    """
+
+    if n is None:
+        n = len(df)
+    df = df.iloc[:n].copy()
+    df.code = df.code.apply(lambda snippet: __replace_tokenizer_toks(snippet))
+    return df
+
+# Cell
 def train_tokenizer(
     df: pd.DataFrame,
     spec_toks: Dict[str, str],
@@ -458,3 +519,17 @@ def process_data(path):
     # Process CodeSearchNet Challenge data
     codesearchnet_path = path / "codesearchnet"
     _process_codesearchnet(codesearchnet_path / "codesearchnet_java")
+
+# Cell
+
+def process_java_df(df: pd.DataFrame, n: Optional[int] = None) -> pd.DataFrame:
+    """
+    Performs preprocessing (rm non ascii and replacement of special chars.)
+    :param df: Pandas Dataframe containing code (in 'code' column)
+    :param n: Number of records to process
+    :return: Processed pandas dataframe
+    """
+    clean_df = remove_non_ascii(df, n)
+    clean_df = replace_special_tokens(clean_df, java_special_tokens)
+
+    return clean_df

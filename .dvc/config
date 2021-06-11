@@ -1,10 +1,2 @@
-[core]
-<<<<<<< HEAD
-    remote = localremote
-['remote "localremote"']
-    url = /tf/data/dvc-icodegen
-=======
-    remote = semeru5
 ['remote "semeru5"']
     url = /semeru/icode_gen/dvc-icodegen
->>>>>>> d2c92a3d99b0f575d4c46d54ab96a622a5ade7e5

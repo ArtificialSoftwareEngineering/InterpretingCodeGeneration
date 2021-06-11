@@ -4,6 +4,11 @@
         "values": "<DVC_METRIC_DATA>"
     },
     "title": "<DVC_METRIC_TITLE>",
+<<<<<<< HEAD
+=======
+    "width": 300,
+    "height": 300,
+>>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
     "mark": {
         "type": "line"
     },

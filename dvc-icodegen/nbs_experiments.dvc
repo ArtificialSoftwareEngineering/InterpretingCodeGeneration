@@ -1,0 +1,5 @@
+outs:
+- md5: 61a1b6ecca38521a4d947238bb7449dc.dir
+  size: 25
+  nfiles: 1
+  path: nbs_experiments

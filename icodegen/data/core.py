@@ -18,6 +18,7 @@ import zipfile
 import pandas as pd
 import tensorflow as tf
 
+# from datasets import load_dataset
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from subprocess import CalledProcessError, check_output
@@ -29,6 +30,7 @@ logger.setLevel(logging.INFO)
 
 # Cell
 URLs = {
+    "bigclonebenchmark": "https://drive.google.com/uc?id=1-AergjO9SGUDI3v8cj6UYisNZ1aJzxOx",
     "bigclonebenchmark_lg": "https://drive.google.com/uc?id=1-4LPiiKGR5Zmg-TLqZEkRbRIdg7UlJQb",
     "bigclonebenchmark_sm": "https://drive.google.com/uc?id=1FCq0lSs4oqc3jpSoucsHlRqjmbVwdRQ9",
     "bug_fix_pairs": "https://drive.google.com/uc?id=1XEhnsQ3Uy6SnFz349I0Iu9lz4ggAaiQp",
@@ -44,12 +46,19 @@ def _download_data(out_path):
     logging.info("Downloading BigCloneBenchmark datasets.")
     bigclone_path = out_path / "bigclonebenchmark"
     bigclone_path.mkdir(parents=True, exist_ok=True)
-    gdown.download(
-        URLs["bigclonebenchmark_lg"], str(bigclone_path / "bigclonebenchmark_lg.csv")
+    gdown.cached_download(
+        URLs["bigclonebenchmark"],
+        str(bigclone_path / "bigclonebenchmark.zip"),
+        postprocess=gdown.extractall,
     )
-    gdown.download(
-        URLs["bigclonebenchmark_sm"], str(bigclone_path / "bigclonebenchmark_sm.csv")
-    )
+    #     gdown.download(
+    #         URLs["bigclonebenchmark_lg"],
+    #         str(bigclone_path / "bigclonebenchmark_lg.csv")
+    #     )
+    #     gdown.download(
+    #         URLs["bigclonebenchmark_sm"],
+    #         str(bigclone_path / "bigclonebenchmark_sm.csv")
+    #     )
 
     # Download Bug Fix Pairs
     logging.info("Downloading and extracting Bug Fix Pairs dataset.")
@@ -70,10 +79,13 @@ def _download_data(out_path):
     # kamran kausar (https://stackoverflow.com/users/3486460/kamran-kausar)
     logging.info("Downloading and extracting CodeSearchNet Challenge dataset.")
     codesearchnet_path = out_path / "codesearchnet"
-    codesearchnet_path.mkdir(parents=True, exist_ok=True)
-    r = requests.get(URLs["codesearchnet_java"])
-    z = zipfile.ZipFile(io.BytesIO(r.content))
-    z.extractall(codesearchnet_path / "codesearchnet_java")
+    if not codesearchnet_path.exists():
+        codesearchnet_path.mkdir(parents=True, exist_ok=True)
+        r = requests.get(URLs["codesearchnet_java"])
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(codesearchnet_path / "codesearchnet_java")
+    else:
+        logging.info(f"File exists: {codesearchnet_path}")
 
 # Cell
 def _isASCII(mthd: str) -> bool:

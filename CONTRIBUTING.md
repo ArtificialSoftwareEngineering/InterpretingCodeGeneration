@@ -2,6 +2,11 @@
 
 ## How to get started
 
+<<<<<<< HEAD
+Before anything else, please install the git hooks that run automatic scripts during each commit and merge to strip the notebooks of superfluous metadata (and avoid merge conflicts). After cloning the repository, run the following command inside it:
+```
+nbdev_install_git_hooks
+=======
 To first get up and running you must first start the docker container that contains the necessary development environment. Run the following command to build the docker container and launch it. This will take a significant amount of time (>20min), but will be faster on future runs.
  - <data_path>: the absolute path to where the data you want to mount into the container is located. This mount will be available at `/home/jovyan/data`
  - <port>: The port you want to be able to access the jupyter lab interface from.
@@ -15,6 +20,7 @@ Once the container has launched, log into the container through the jupyter lab 
 nbdev_install_git_hooks
 pip install -e .
 pre-commit install
+>>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
 ```
 
 ## Did you find a bug?

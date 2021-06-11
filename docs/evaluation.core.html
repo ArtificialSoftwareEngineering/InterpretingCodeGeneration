@@ -111,7 +111,7 @@ nb_path: "nbs/04_evaluation.core.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_mean_probs" class="doc_header"><code>get_mean_probs</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L16" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mean_probs</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>model</code></strong>:<a href="/icodegen/model.core.html#Model"><code>Model</code></a>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>)</p>
+<h4 id="get_mean_probs" class="doc_header"><code>get_mean_probs</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L22" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mean_probs</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>model</code></strong>:<a href="/icodegen/model.core.html#Model"><code>Model</code></a>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get the mean probability of each token that the model
 should predict for an entire pandas dataframe.</p>
@@ -224,7 +224,7 @@ should predict for an entire pandas dataframe.</p>
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="find_parens" class="doc_header"><code>find_parens</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L58" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_parens</code>(<strong><code>toks</code></strong>:<code>List</code>[<code>str</code>], <strong><code>opening</code></strong>:<code>str</code>, <strong><code>closing</code></strong>:<code>str</code>)</p>
+<h4 id="find_parens" class="doc_header"><code>find_parens</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L64" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>find_parens</code>(<strong><code>toks</code></strong>:<code>List</code>[<code>str</code>], <strong><code>opening</code></strong>:<code>str</code>, <strong><code>closing</code></strong>:<code>str</code>)</p>
 </blockquote>
 <p>Get the indices for the opening and closing tokens.
 From <a href="https://stackoverflow.com/a/29992065/5768407">https://stackoverflow.com/a/29992065/5768407</a>
@@ -255,7 +255,7 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="mean_dist_probs" class="doc_header"><code>mean_dist_probs</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L121" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mean_dist_probs</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>model</code></strong>:<a href="/icodegen/model.core.html#Model"><code>Model</code></a>, <strong><code>opening</code></strong>:<code>Optional</code>[<code>str</code>]=<em><code>'&lt;{&gt;'</code></em>, <strong><code>closing</code></strong>:<code>Optional</code>[<code>str</code>]=<em><code>'&lt;}&gt;'</code></em>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>)</p>
+<h4 id="mean_dist_probs" class="doc_header"><code>mean_dist_probs</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L127" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>mean_dist_probs</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>model</code></strong>:<a href="/icodegen/model.core.html#Model"><code>Model</code></a>, <strong><code>opening</code></strong>:<code>Optional</code>[<code>str</code>]=<em><code>'&lt;{&gt;'</code></em>, <strong><code>closing</code></strong>:<code>Optional</code>[<code>str</code>]=<em><code>'&lt;}&gt;'</code></em>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get the distance between opening and closing tokens and the mean probability of each closing token that the model should predict for an entire pandas dataframe.</p>
 <p>:param df: the pandas dataframe containing each method to have the model predict on
@@ -297,12 +297,30 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
             <span class="mf">1.97613608e-05</span><span class="p">,</span>
             <span class="mf">1.97816771e-05</span><span class="p">,</span>
         <span class="p">],</span>
+        <span class="s2">&quot;std_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">4.93400876e-09</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;med_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">2.04683793e-05</span><span class="p">,</span>
+            <span class="mf">2.07205376e-05</span><span class="p">,</span>
+            <span class="mf">1.97817026e-05</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;mad_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">4.93400876e-09</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+        <span class="p">],</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="n">df_dist</span> <span class="o">=</span> <span class="n">mean_dist_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">gru_model</span><span class="p">,</span> <span class="n">opening</span><span class="o">=</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="n">closing</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">std_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">std_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">med_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">med_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mad_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mad_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -327,12 +345,30 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
             <span class="mf">1.97613608e-05</span><span class="p">,</span>
             <span class="mf">1.97816771e-05</span><span class="p">,</span>
         <span class="p">],</span>
+        <span class="s2">&quot;std_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">4.93400876e-09</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;med_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">2.04683793e-05</span><span class="p">,</span>
+            <span class="mf">2.07205376e-05</span><span class="p">,</span>
+            <span class="mf">1.97817026e-05</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;mad_prob&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">4.93400876e-09</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+            <span class="mf">0.00000000e00</span><span class="p">,</span>
+        <span class="p">],</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="n">df_dist</span> <span class="o">=</span> <span class="n">mean_dist_probs</span><span class="p">(</span><span class="n">df_fake</span><span class="p">,</span> <span class="n">trnsfr_model</span><span class="p">,</span> <span class="n">opening</span><span class="o">=</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="n">closing</span><span class="o">=</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
 
 <span class="k">assert</span> <span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mean_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">std_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">std_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">med_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">med_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">DIST_DF</span><span class="o">.</span><span class="n">mad_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">df_dist</span><span class="o">.</span><span class="n">mad_prob</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -380,7 +416,7 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="get_mean_cross_entropy" class="doc_header"><code>get_mean_cross_entropy</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L168" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mean_cross_entropy</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>model</code></strong>:<a href="/icodegen/model.core.html#Model"><code>Model</code></a>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>)</p>
+<h4 id="get_mean_cross_entropy" class="doc_header"><code>get_mean_cross_entropy</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L195" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>get_mean_cross_entropy</code>(<strong><code>df</code></strong>:<code>DataFrame</code>, <strong><code>model</code></strong>:<a href="/icodegen/model.core.html#Model"><code>Model</code></a>, <strong><code>n</code></strong>:<code>Optional</code>[<code>int</code>]=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Get the mean cross entropy for a model on an entire pandas dataframe</p>
 <p>:param df: the pandas dataframe containing each method to have the model predict on
@@ -468,6 +504,62 @@ by user Baltasarq (<a href="https://stackoverflow.com/users/266978/baltasarq">ht
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">CROSS_ENTROPY_MEDIAN</span><span class="p">,</span> <span class="n">cross_entropy</span><span class="p">[</span><span class="s2">&quot;median&quot;</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">CROSS_ENTROPY_STD</span><span class="p">,</span> <span class="n">cross_entropy</span><span class="p">[</span><span class="s2">&quot;std&quot;</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">CROSS_ENTROPY_MAD</span><span class="p">,</span> <span class="n">cross_entropy</span><span class="p">[</span><span class="s2">&quot;mad&quot;</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<h4 id="evaluate" class="doc_header"><code>evaluate</code><a href="https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/icodegen/evaluation/core.py#L310" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>evaluate</code>(<strong><code>data_path</code></strong>, <strong><code>model_path</code></strong>)</p>
+</blockquote>
+<p>Function for evaluating models related to the library.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+
+</div>
+    {% endraw %}
+
+    {% raw %}
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>

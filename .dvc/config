@@ -1,4 +1,4 @@
 [core]
     remote = semeru5
 ['remote "semeru5"']
-    url = /semeru/icode_gen/dvc-icodegen
+    url = ../../data/dvc-icodegen

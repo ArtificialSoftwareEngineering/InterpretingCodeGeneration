@@ -2,9 +2,13 @@
 
 __all__ = ["index", "modules", "custom_doc_links", "git_url"]
 
+<<<<<<< HEAD
+index = {"remove_non_ascii": "00_data.core.ipynb",
+=======
 index = {"logger": "02_model.core.ipynb",
          "URLs": "00_data.core.ipynb",
          "remove_non_ascii": "00_data.core.ipynb",
+>>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
          "beautify_code": "00_data.core.ipynb",
          "extra_tokens": "00_data.core.ipynb",
          "java_reserved_tokens": "00_data.core.ipynb",
@@ -14,6 +18,25 @@ index = {"logger": "02_model.core.ipynb",
          "java_special_tokens": "00_data.core.ipynb",
          "replace_special_tokens": "00_data.core.ipynb",
          "train_tokenizer": "00_data.core.ipynb",
+<<<<<<< HEAD
+         "java_comment_remover": "00_data.transforms.ipynb",
+         "line_randomizer": "00_data.transforms.ipynb",
+         "code_token_randomizer": "00_data.transforms.ipynb",
+         "transform_df": "00_data.transforms.ipynb",
+         "Model": "01_model.core.ipynb",
+         "TransformerModel": "01_model.core.ipynb",
+         "GRUModel": "01_model.core.ipynb"}
+
+modules = ["data/core.py",
+           "data/eda.py",
+           "data/transforms.py",
+           "model/core.py",
+           "model/gru.py"]
+
+doc_url = "https://danaderp.github.io/icodegen/"
+
+git_url = "https://github.com/danaderp/InterpretingCodeGeneration/tree/master/"
+=======
          "convert_df_to_tfds": "00_data.core.ipynb",
          "process_data": "00_data.core.ipynb",
          "java_comment_remover": "01_data.transforms.ipynb",
@@ -30,36 +53,20 @@ index = {"logger": "02_model.core.ipynb",
          "GRU_CONFIG_4": "02_model.core.ipynb",
          "GRU_CONFIG_5": "02_model.core.ipynb",
          "train": "02_model.core.ipynb",
-         "MethodName": "04_evaluation.causal.ipynb",
-         "TargetUnit": "04_evaluation.causal.ipynb",
-         "RefuteEstimate": "04_evaluation.causal.ipynb",
-         "PropensityWeighting": "04_evaluation.causal.ipynb",
-         "CausalCodeGen": "04_evaluation.causal.ipynb",
-         "CausalCodeGenNoGraph": "04_evaluation.causal.ipynb",
-         "CausalCodeGenMultiple": "04_evaluation.causal.ipynb",
          "get_mean_probs": "04_evaluation.core.ipynb",
          "find_parens": "04_evaluation.core.ipynb",
          "mean_dist_probs": "04_evaluation.core.ipynb",
-         "token_taxonomy": "04_evaluation.core.ipynb",
-         "get_error_rates": "04_evaluation.core.ipynb",
-         "ERROR_THRESHOLD": "04_evaluation.core.ipynb",
          "get_mean_cross_entropy": "04_evaluation.core.ipynb",
-         "evaluate": "04_evaluation.core.ipynb",
-         "path": "04_evaluation.core.ipynb",
-         "data_path": "04_evaluation.core.ipynb",
-         "model_path": "04_evaluation.core.ipynb",
-         "results": "04_evaluation.core.ipynb"}
+         "evaluate": "04_evaluation.core.ipynb"}
 
 modules = ["data/core.py",
-           "data/eda.py",
            "data/transforms.py",
-           "model/gru.py",
            "model/core.py",
-           "evaluation/causal.py",
            "evaluation/core.py"]
 
 doc_url = "https://ArtificialSoftwareEngineering.github.io/icodegen/"
 
 git_url = "https://github.com/ArtificialSoftwareEngineering/icodegen/tree/main/"
+>>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
 
 def custom_doc_links(name): return None

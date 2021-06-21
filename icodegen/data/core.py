@@ -43,14 +43,14 @@ def _download_data(out_path):
     Function for downloading all the data to reproduce our study.
     """
     # Download bigclonebenchmark_lg and bigclonebenchmark_sm
-    logging.info("Downloading BigCloneBenchmark datasets.")
-    bigclone_path = out_path / "bigclonebenchmark"
-    bigclone_path.mkdir(parents=True, exist_ok=True)
-    gdown.cached_download(
-        URLs["bigclonebenchmark"],
-        str(bigclone_path / "bigclonebenchmark.zip"),
-        postprocess=gdown.extractall,
-    )
+#     logging.info("Downloading BigCloneBenchmark datasets.")
+#     bigclone_path = out_path / "bigclonebenchmark"
+#     bigclone_path.mkdir(parents=True, exist_ok=True)
+#     gdown.cached_download(
+#         URLs["bigclonebenchmark"],
+#         str(bigclone_path / "bigclonebenchmark.zip"),
+#         postprocess=gdown.extractall,
+#     )
     #     gdown.download(
     #         URLs["bigclonebenchmark_lg"],
     #         str(bigclone_path / "bigclonebenchmark_lg.csv")
@@ -77,15 +77,15 @@ def _download_data(out_path):
     # from https://stackoverflow.com/a/14260592/5768407 by users
     # yoavram (https://stackoverflow.com/users/1063612/yoavram) and
     # kamran kausar (https://stackoverflow.com/users/3486460/kamran-kausar)
-    logging.info("Downloading and extracting CodeSearchNet Challenge dataset.")
-    codesearchnet_path = out_path / "codesearchnet"
-    if not codesearchnet_path.exists():
-        codesearchnet_path.mkdir(parents=True, exist_ok=True)
-        r = requests.get(URLs["codesearchnet_java"])
-        z = zipfile.ZipFile(io.BytesIO(r.content))
-        z.extractall(codesearchnet_path / "codesearchnet_java")
-    else:
-        logging.info(f"File exists: {codesearchnet_path}")
+#     logging.info("Downloading and extracting CodeSearchNet Challenge dataset.")
+#     codesearchnet_path = out_path / "codesearchnet"
+#     if not codesearchnet_path.exists():
+#         codesearchnet_path.mkdir(parents=True, exist_ok=True)
+#         r = requests.get(URLs["codesearchnet_java"])
+#         z = zipfile.ZipFile(io.BytesIO(r.content))
+#         z.extractall(codesearchnet_path / "codesearchnet_java")
+#     else:
+#         logging.info(f"File exists: {codesearchnet_path}")
 
 # Cell
 def _isASCII(mthd: str) -> bool:
@@ -478,12 +478,14 @@ def _process_bug_fix(path):
         with open(fix_p, "r") as f:
             fixes.append(f.read())
 
-    df_buggy = pd.DataFrame(bugs, columns=["code"])
-    df_buggy = remove_non_ascii(df_buggy)
+    df_fix_bug = pd.DataFrame(zip(bugs, fixes), columns=["code", "fixes"])
+    df_fix_bug = remove_non_ascii(df_fix_bug)
+    df_buggy = pd.DataFrame(df_fix_bug.code.values, columns=["code"])
+#     df_buggy = remove_non_ascii(df_buggy)
     df_buggy = replace_special_tokens(df_buggy, java_special_tokens)
 
-    df_fixed = pd.DataFrame(fixes, columns=["code"])
-    df_fixed = remove_non_ascii(df_fixed)
+    df_fixed = pd.DataFrame(df_fix_bug.fixes.values, columns=["code"])
+#     df_fixed = remove_non_ascii(df_fixed)
     df_fixed = replace_special_tokens(df_fixed, java_special_tokens)
 
     # Saving to jsonl because csv formatting is causing issues with quoting

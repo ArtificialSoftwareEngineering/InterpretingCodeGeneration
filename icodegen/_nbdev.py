@@ -56,12 +56,10 @@ index = {"logger": "02_model.core.ipynb",
          "token_taxonomy": "04_evaluation.core.ipynb",
          "get_error_rates": "04_evaluation.core.ipynb",
          "ERROR_THRESHOLD": "04_evaluation.core.ipynb",
+         "get_error_rates_df": "04_evaluation.core.ipynb",
          "get_mean_cross_entropy": "04_evaluation.core.ipynb",
-         "evaluate": "04_evaluation.core.ipynb",
-         "path": "04_evaluation.core.ipynb",
-         "data_path": "04_evaluation.core.ipynb",
-         "model_path": "04_evaluation.core.ipynb",
-         "results": "04_evaluation.core.ipynb"}
+         "get_mean_cross_entropy_df": "04_evaluation.core.ipynb",
+         "evaluate": "04_evaluation.core.ipynb"}
 
 modules = ["data/core.py",
            "data/eda.py",

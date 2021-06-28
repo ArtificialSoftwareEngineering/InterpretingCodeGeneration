@@ -1,5 +1,5 @@
 outs:
-- md5: ddc9c9cae9591888be6821935e476a40.dir
-  size: 1837516255
-  nfiles: 208
+- md5: 461f01b9873711255919a2c4ba815238.dir
+  size: 677186006
+  nfiles: 200
   path: nbs_experiments

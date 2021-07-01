@@ -1,0 +1,4 @@
+[core]
+    remote = new5
+['remote "new5"']
+    url = /home/jovyan/data/new-icodegen

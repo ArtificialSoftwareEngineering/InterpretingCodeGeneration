@@ -1,4 +1,0 @@
-[core]
-    remote = semeru5
-['remote "semeru5"']
-    url = ../../data/dvc-icodegen

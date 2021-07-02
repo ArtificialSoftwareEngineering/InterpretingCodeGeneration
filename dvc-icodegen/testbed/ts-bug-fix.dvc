@@ -1,5 +1,5 @@
 outs:
-- md5: 48cae162917cebfb74fa7cd7936d0e03.dir
-  size: 193640451
-  nfiles: 3
+- md5: d74c1af3136c248e08f5c4e71d68d343.dir
+  size: 273770141
+  nfiles: 5
   path: ts-bug-fix

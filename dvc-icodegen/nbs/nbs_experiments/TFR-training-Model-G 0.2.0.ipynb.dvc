@@ -1,4 +1,4 @@
 outs:
-- md5: de1438f27b691c1c3959705ae4cc0b77
-  size: 21201
+- md5: 7661ce05c49e243494ca5da7422a9aba
+  size: 8105
   path: TFR-training-Model-G 0.2.0.ipynb

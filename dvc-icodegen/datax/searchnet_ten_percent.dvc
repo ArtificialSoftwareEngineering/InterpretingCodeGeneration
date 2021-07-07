@@ -1,5 +1,5 @@
 outs:
-- md5: d6a20cc06c74693d0ea35f89dd17d1ce.dir
-  size: 41228409
-  nfiles: 3
+- md5: 55636a340118e6ffc48e570aad4a280a.dir
+  size: 342428405
+  nfiles: 15
   path: searchnet_ten_percent

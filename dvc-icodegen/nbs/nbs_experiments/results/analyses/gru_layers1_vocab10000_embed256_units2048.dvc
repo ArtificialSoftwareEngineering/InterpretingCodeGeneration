@@ -1,5 +1,5 @@
 outs:
-- md5: 698e90e7b3a8bc0ccea4b6788bac921e.dir
-  size: 336333413
-  nfiles: 2
+- md5: 03fce4b80576f4f891d994a7bbe07cee.dir
+  size: 425715367
+  nfiles: 4
   path: gru_layers1_vocab10000_embed256_units2048

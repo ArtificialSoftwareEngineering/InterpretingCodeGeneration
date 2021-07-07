@@ -1,3 +1,6 @@
+tokenizers==0.9.3
+transformers==3.5.0
+dowhy==0.6
 absl-py==0.12.0
 astunparse==1.6.3
 async-generator==1.10
@@ -93,7 +96,7 @@ plotly==4.8.2
 ply==3.11
 pre-commit==2.11.1
 progress==1.5
-prompt-toolkit==1.0.15
+prompt-toolkit==3.0.19
 protobuf==3.14.0
 py==1.10.0
 pyasn1==0.4.8
@@ -136,7 +139,6 @@ tensorflow-estimator==2.4.0
 termcolor==1.1.0
 testpath==0.4.4
 text-unidecode==1.3
-tokenizers==0.9.3
 torch==1.7.1+cu110
 torchaudio==0.7.2
 torchvision==0.8.2+cu110
@@ -152,6 +154,4 @@ xmltodict==0.12.0
 yapf==0.31.0
 zc.lockfile==2.0
 zict==2.0.0
-transformers==3.5.0
-dowhy==0.6
 PyInquirer==1.0.3

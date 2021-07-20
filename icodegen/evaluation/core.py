@@ -549,14 +549,14 @@ _TRANSFORMs = {
 # Cell
 def _get_metrics(df, model):
 #     mean_probs = get_mean_probs(df, model)
-    error_taxonomy_df = get_error_rates_df(df, model, bs = 192)
+#     error_taxonomy_df = get_error_rates_df(df, model, bs = 192)
 #     df_dist = mean_dist_probs(df, model)
-#     mean_cross_entropy_df = get_mean_cross_entropy_df(df, model, bs = 192)
+    mean_cross_entropy_df = get_mean_cross_entropy_df(df, model, bs = 192)
 
     return {
-        "error_taxonomy": error_taxonomy_df,
+#         "error_taxonomy": error_taxonomy_df,
 #         "dist_mean": df_dist,
-#         "mean_cross_entropy": mean_cross_entropy_df,
+        "mean_cross_entropy": mean_cross_entropy_df,
     }
 
 
@@ -566,15 +566,15 @@ def _long_range(bigclone_path, bugfix_path, cmt_path, model, out_path, n=None):
 
     # TODO add bigclone data
 
-#     df_buggy = pd.read_json(bugfix_path / "buggy.jsonl", orient="records", lines=True)[
-#         :n
-#     ]
-#     buggy_metrics = _get_metrics(df_buggy, model)
+    df_buggy = pd.read_json(bugfix_path / "buggy.jsonl", orient="records", lines=True)[
+        :n
+    ]
+    buggy_metrics = _get_metrics(df_buggy, model)
 
-#     df_fixed = pd.read_json(bugfix_path / "fixed.jsonl", orient="records", lines=True)[
-#         :n
-#     ]
-#     fixed_metrics = _get_metrics(df_fixed, model)
+    df_fixed = pd.read_json(bugfix_path / "fixed.jsonl", orient="records", lines=True)[
+        :n
+    ]
+    fixed_metrics = _get_metrics(df_fixed, model)
 
 #     bug_fix_err_df = pd.concat(
 #         [buggy_metrics["error_taxonomy"], fixed_metrics["error_taxonomy"]]
@@ -582,30 +582,31 @@ def _long_range(bigclone_path, bugfix_path, cmt_path, model, out_path, n=None):
 #     bug_fix_err_df["x_treatment"] = [False, True] * len(buggy_metrics["error_taxonomy"])
 #     bug_fix_err_df.to_json(out_path / "bug_fix_error_taxonomy.jsonl", orient="records", lines=True)
 
-#     bug_fix_cross_df = pd.concat(
-#         [buggy_metrics["mean_cross_entropy"], fixed_metrics["mean_cross_entropy"]]
+    bug_fix_cross_df = pd.concat(
+        [buggy_metrics["mean_cross_entropy"], fixed_metrics["mean_cross_entropy"]]
+    ).sort_index().reset_index(drop=True)
+    bug_fix_cross_df["x_treatment"] = [False, True] * len(buggy_metrics["mean_cross_entropy"])
+    bug_fix_cross_df.to_json(out_path / "bug_fix_cross_entropy.jsonl", orient="records", lines=True)
+
+#     df_uncmtd = pd.read_json(cmt_path / "uncommented_code.jsonl", orient="records", lines=True)[:n]
+#     uncmtd_metrics = _get_metrics(df_uncmtd, model)
+
+#     df_cmtd = pd.read_json(cmt_path / "commented_code.jsonl", orient="records", lines=True)[:n]
+#     cmtd_metrics = _get_metrics(df_cmtd, model)
+
+#     cmtd_err_df = pd.concat(
+#         [uncmtd_metrics["error_taxonomy"], cmtd_metrics["error_taxonomy"]]
 #     ).sort_index().reset_index(drop=True)
-#     bug_fix_cross_df["x_treatment"] = [False, True] * len(buggy_metrics["mean_cross_entropy"])
-#     bug_fix_cross_df.to_json(out_path / "bug_fix_cross_entropy.jsonl", orient="records", lines=True)
-    df_uncmtd = pd.read_json(cmt_path / "uncommented_code.jsonl", orient="records", lines=True)[:n]
-    uncmtd_metrics = _get_metrics(df_uncmtd, model)
+#     cmtd_err_df["x_treatment"] = [False, True] * len(uncmtd_metrics["error_taxonomy"])
+#     cmtd_err_df.to_json(out_path / "commenting_error_taxonomy.jsonl", orient="records", lines=True)
 
-    df_cmtd = pd.read_json(cmt_path / "commented_code.jsonl", orient="records", lines=True)[:n]
-    cmtd_metrics = _get_metrics(df_cmtd, model)
+#     cmtd_cross_df = pd.concat(
+#         [uncmtd_metrics["mean_cross_entropy"], cmtd_metrics["mean_cross_entropy"]]
+#     ).sort_index().reset_index(drop=True)
+#     cmtd_cross_df["x_treatment"] = [False, True] * len(uncmtd_metrics["mean_cross_entropy"])
+#     cmtd_cross_df.to_json(out_path / "commenting_cross_entropy.jsonl", orient="records", lines=True)
 
-    cmtd_err_df = pd.concat(
-        [uncmtd_metrics["error_taxonomy"], cmtd_metrics["error_taxonomy"]]
-    ).sort_index().reset_index(drop=True)
-    cmtd_err_df["x_treatment"] = [False, True] * len(uncmtd_metrics["error_taxonomy"])
-    cmtd_err_df.to_json(out_path / "commenting_error_taxonomy.jsonl", orient="records", lines=True)
-
-    cmtd_cross_df = pd.concat(
-        [uncmtd_metrics["mean_cross_entropy"], cmtd_metrics["mean_cross_entropy"]]
-    ).sort_index().reset_index(drop=True)
-    cmtd_cross_df["x_treatment"] = [False, True] * len(uncmtd_metrics["mean_cross_entropy"])
-    cmtd_cross_df.to_json(out_path / "commenting_cross_entropy.jsonl", orient="records", lines=True)
-
-    return long_range_results
+#     return long_range_results
 
 
 def _counterfactual(control_results, treatment_results):
@@ -624,6 +625,9 @@ def evaluate(data_path, model_path, experiment_path):
         if "dvc" in m_path.name:
             continue
         elif ".gitignore" in m_path.name:
+            continue
+
+        if m_path.name != "gru_layers1_vocab10000_embed256_units1024" and m_path.name != "gru_layers3_vocab10000_embed256_units1024":
             continue
         print(m_path)
         model = RNNModel.from_path(m_path)

@@ -2,8 +2,9 @@
 
 __all__ = ['logger', 'Model', 'TransformerHFModel', 'causal_attention_mask', 'TransformerBlock', 'TransformerBlock',
            'TokenAndPositionEmbedding', 'MiniatureGPTModel', 'RNNModel', 'VANILLA_CONFIG', 'GRU_CONFIG_1',
-           'GRU_CONFIG_2', 'GRU_CONFIG_3', 'GRU_CONFIG_4', 'GRU_CONFIG_5', 'train', 'train_tfr_hf_model',
-           'train_tfr_keras_model', 'perform_hf_tfr_sampling', 'perform_min_tfr_model_sampling', 'perform_rnn_sampling']
+           'GRU_CONFIG_2', 'GRU_CONFIG_3', 'GRU_CONFIG_4', 'GRU_CONFIG_5', 'train', 'get_accumulation_optimizer',
+           'AccumulationCallback', 'train_tfr_hf_model', 'train_tfr_keras_model', 'perform_hf_tfr_sampling',
+           'perform_min_tfr_model_sampling', 'perform_rnn_sampling']
 
 # Cell
 import json
@@ -24,7 +25,7 @@ logger.setLevel(logging.INFO)
 
 # Cell
 
-from transformers import TFGPT2LMHeadModel, GPT2Config, GPT2Tokenizer
+from transformers import TFGPT2LMHeadModel, GPT2Config, GPT2Tokenizer, GradientAccumulator
 import time
 
 from tensorflow import keras
@@ -1079,10 +1080,53 @@ def _get_tkzr_ds(out_path: Path, data_path: Path,
 
 # Cell
 
+#references:
+#GradientAccumulator class: https://huggingface.co/transformers/_modules/transformers/optimization_tf.html#GradientAccumulator
+#use in TFTrainer: https://huggingface.co/transformers/_modules/transformers/trainer_tf.html#TFTrainer
+
+def get_accumulation_optimizer(optimizer_class, steps = 1, **kwargs):
+
+    class AccumulationOptimizer(optimizer_class):
+        def __init__(self, steps, **kwargs):
+            super().__init__(**kwargs)
+            self.batch = 0
+            self.steps = steps
+            self.accumulator = GradientAccumulator()
+            self.accumulator.reset()
+
+        def apply_gradients(self, grads_and_vars, **kwargs):
+            return_value = None
+            if not hasattr(self, 'vars'):
+                self.vars = [gradvar[1] for gradvar in grads_and_vars]
+
+            self.batch += 1
+            self.accumulator([gradvar[0] for gradvar in grads_and_vars])
+            return self.apply_accumulated_gradients(**kwargs)
+
+
+        def apply_accumulated_gradients(self, **kwargs):
+            if self.batch % self.steps == 0:
+                return_value = super().apply_gradients(zip(self.accumulator.gradients(), self.vars), **kwargs)
+                self.accumulator.reset()
+                return return_value
+
+    return AccumulationOptimizer(steps, **kwargs)
+
+# Cell
+
+class AccumulationCallback(tf.keras.callbacks.Callback):
+    def __init__(self, optimizer):
+        self.optimizer = optimizer
+
+    def on_epoch_end(self, epoch, logs=None):
+        self.optimizer.apply_accumulated_gradients()
+
+# Cell
+
 def train_tfr_hf_model(hf_model, config_class, config_dict,
                        data_path, out_path, optimizer, loss,
                        epochs=64, max_length=300,
-                       batch_size=64, n=None, pretrained_model=None):
+                       batch_size=64, n=None, pretrained_model=None, gradient_accumulation = False):
     """
     Function to train a Transformer model according to the provided params
     :param hf_model: Class of the HF model to implement the Transformer
@@ -1122,6 +1166,8 @@ def train_tfr_hf_model(hf_model, config_class, config_dict,
         hf_model_impl = hf_model.from_pretrained(pretrained_model)
 
     tfr_model = TransformerHFModel(str(out_path), hf_model_impl, tokenizer, optimizer, loss, name_sufix=name_sufix)
+    if gradient_accumulation:
+        tfr_model.callbacks.append(AccumulationCallback(optimizer))
 
     logging.info("Starting the training of the Transformer model.")
     start_trn_time = time.time()

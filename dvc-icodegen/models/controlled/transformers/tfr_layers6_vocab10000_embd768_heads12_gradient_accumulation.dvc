@@ -1,0 +1,5 @@
+outs:
+- md5: 1a41f39f7fa2e40ea0783a86c44edebe.dir
+  size: 1431414497
+  nfiles: 28
+  path: tfr_layers6_vocab10000_embd768_heads12_gradient_accumulation

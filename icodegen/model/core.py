@@ -1085,6 +1085,13 @@ def _get_tkzr_ds(out_path: Path, data_path: Path,
 #use in TFTrainer: https://huggingface.co/transformers/_modules/transformers/trainer_tf.html#TFTrainer
 
 def get_accumulation_optimizer(optimizer_class, steps = 1, **kwargs):
+    """
+    Creates a custom optimizer that adds gradient accumulation functionality to a tf.keras optimizer
+    :param optimizer_class: Class of optimizer to add gradient accumulation to. The returned optimizer will be a subclass of this class
+    :param steps: Number of gradient accumulation steps, i.e. the number of batches over which to accumulate gradients
+    :param kwargs: Any other keyword arguments to be passed to the optimizer_class constructor
+    :returns: AccumulationOptimizer instance that is a subclass of optimizer_class with gradient accumulation
+    """
 
     class AccumulationOptimizer(optimizer_class):
         def __init__(self, steps, **kwargs):
@@ -1101,13 +1108,17 @@ def get_accumulation_optimizer(optimizer_class, steps = 1, **kwargs):
 
             self.batch += 1
             self.accumulator([gradvar[0] for gradvar in grads_and_vars])
-            return self.apply_accumulated_gradients(**kwargs)
+
+            if self.batch == self.steps:
+                return_value = self.apply_accumulated_gradients(**kwargs)
+            return return_value
 
 
         def apply_accumulated_gradients(self, **kwargs):
-            if self.batch % self.steps == 0:
+            if self.batch != 0:
                 return_value = super().apply_gradients(zip(self.accumulator.gradients(), self.vars), **kwargs)
                 self.accumulator.reset()
+                self.batch = 0
                 return return_value
 
     return AccumulationOptimizer(steps, **kwargs)
@@ -1115,6 +1126,10 @@ def get_accumulation_optimizer(optimizer_class, steps = 1, **kwargs):
 # Cell
 
 class AccumulationCallback(tf.keras.callbacks.Callback):
+    """
+    Callback for use with an AccumulationOptimizer.
+    Applies excess gradients at the end of an epoch when the number of batches is not divisible by the number of accumulation steps.
+    """
     def __init__(self, optimizer):
         self.optimizer = optimizer
 
@@ -1141,6 +1156,7 @@ def train_tfr_hf_model(hf_model, config_class, config_dict,
     :param batch_size: Batch size to use
     :param n: Number of training points to take (entire ds taken by default)
     :param pretrained_model: Name/Path of the pretrained model to load
+    :param gradient_accumulation: Boolean, set to True if using gradient accumulation with an AccumulationOptimizer
     """
 
     out_path.mkdir(exist_ok=True)

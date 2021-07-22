@@ -1100,8 +1100,10 @@ def get_accumulation_optimizer(optimizer_class, steps = 1, **kwargs):
             self.steps = steps
             self.accumulator = GradientAccumulator()
             self.accumulator.reset()
+            self.count = 0
 
-        def apply_gradients(self, grads_and_vars, **kwargs):
+        def apply_gradients(self, grads_and_vars, name=None, experimental_aggregate_gradients=True):
+            self.count +=1
             return_value = None
             if not hasattr(self, 'vars'):
                 self.vars = [gradvar[1] for gradvar in grads_and_vars]
@@ -1110,13 +1112,14 @@ def get_accumulation_optimizer(optimizer_class, steps = 1, **kwargs):
             self.accumulator([gradvar[0] for gradvar in grads_and_vars])
 
             if self.batch == self.steps:
-                return_value = self.apply_accumulated_gradients(**kwargs)
+                return_value = self.apply_accumulated_gradients(name, experimental_aggregate_gradients)
             return return_value
 
 
-        def apply_accumulated_gradients(self, **kwargs):
+        def apply_accumulated_gradients(self, name=None, experimental_aggregate_gradients=True):
             if self.batch != 0:
-                return_value = super().apply_gradients(zip(self.accumulator.gradients(), self.vars), **kwargs)
+                return_value = super().apply_gradients(zip(self.accumulator.gradients, self.vars),
+                                                       name, experimental_aggregate_gradients)
                 self.accumulator.reset()
                 self.batch = 0
                 return return_value
@@ -1134,6 +1137,7 @@ class AccumulationCallback(tf.keras.callbacks.Callback):
         self.optimizer = optimizer
 
     def on_epoch_end(self, epoch, logs=None):
+        logging.debug(self.optimizer.count)
         self.optimizer.apply_accumulated_gradients()
 
 # Cell

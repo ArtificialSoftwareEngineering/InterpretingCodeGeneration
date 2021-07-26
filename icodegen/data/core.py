@@ -19,6 +19,7 @@ import pandas as pd
 import tensorflow as tf
 
 # from datasets import load_dataset
+from .transforms import java_comment_remover, transform_df
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from subprocess import CalledProcessError, check_output
@@ -335,7 +336,7 @@ def _replace_spec_toks(mthd: str, spec_toks: Dict[str, str]) -> str:
     """
     Performs the replacement of special tokens by the original ones
     """
-
+    spec_toks = spec_toks.copy()
     # Add special tokenizer tokens -> deleted for code analysis
     spec_toks['<bos>'] = ""
     spec_toks['<eos>'] = ""
@@ -522,6 +523,32 @@ def _process_codesearchnet(path):
             df_bpe.to_json(path / "bpe.jsonl", orient="records", lines=True)
         else:
             df.to_json(path / f"{split}.jsonl", orient="records", lines=True)
+
+
+def _process_comment_testbed(path, out_path):
+    df_tst = pd.read_json(path / "test.jsonl", orient="records", lines=True)
+    df_replaced = replace_spec_toks_to_original(df_tst, java_special_tokens)
+    df_no_cmts = transform_df(df_replaced, java_comment_remover)
+    df_no_cmts = replace_special_tokens(df_no_cmts, java_special_tokens)
+
+    # remove duplicates
+    df_combined = pd.concat(
+        [
+            df_tst.rename(columns={"code": "commented"}), df_no_cmts.rename(columns={"code": "uncommented"})
+        ], axis=1
+    )
+    non_dups = df_combined[df_combined.apply(lambda x: x["commented"] != x["uncommented"], axis = 1)]
+
+    df_cmtd = pd.DataFrame(non_dups.commented.values, columns=["code"])
+    df_uncmtd = pd.DataFrame(non_dups.uncommented.values, columns=["code"])
+
+#     .code.update(non_dups.commented)
+#     df_no_cmts.code.update(non_dups.uncommented)
+#     df_no_cmts.code.values = non_dups.uncommented.values
+
+    df_cmtd.to_json(out_path/"commented_code.jsonl", orient="records", lines=True)
+    df_uncmtd.to_json(out_path/"uncommented_code.jsonl", orient="records", lines=True)
+
 
 
 def process_data(path):

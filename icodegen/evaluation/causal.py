@@ -91,7 +91,7 @@ class CausalCodeGenNoGraph(CausalCodeGen):
      #1. Identification
     def identification(self,proceed_when_unidentifiable=True):
         self.identified_estimand = self.model.identify_effect(proceed_when_unidentifiable=proceed_when_unidentifiable)
-        print(self.identified_estimand)
+        #print(self.identified_estimand)
         print('Identification Done')
         pass
 
@@ -102,8 +102,8 @@ class CausalCodeGenNoGraph(CausalCodeGen):
             method_name = method_name,
             target_units = target_units
         )
-        print(self.estimate)
-        print("Causal Estimate is " + str(self.estimate.value))
+        #print(self.estimate)
+        #print("Causal Estimate is " + str(self.estimate.value))
         print('Estimation Done')
         pass
 

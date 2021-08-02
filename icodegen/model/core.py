@@ -789,7 +789,7 @@ class RNNModel(Model):
         #         ids = self.tokenizer.encode("<sos>" + method).ids
         #         input_eval = tf.expand_dims(ids, 0)
 
-        logits = self.model(inputs["input_ids"])
+        logits = self.model(inputs)
         probs = tf.nn.softmax(logits)  # [0].numpy()
 
         return probs

@@ -3,7 +3,8 @@
 __all__ = ['logger', 'URLs', 'remove_non_ascii', 'beautify_code', 'extra_tokens', 'java_reserved_tokens',
            'java_operator_tokens', 'java_structural_tokens', 'java_extra_tokens', 'java_special_tokens',
            'replace_special_tokens', 'replace_spec_toks_to_original', '__replace_tokenizer_toks',
-           'replace_tokenizer_toks', 'train_tokenizer', 'convert_df_to_tfds', 'process_data', 'process_java_df']
+           'replace_tokenizer_toks', 'train_tokenizer', 'convert_df_to_tfds', 'process_data', 'TYPES',
+           'process_java_df']
 
 # Cell
 import gdown
@@ -44,22 +45,14 @@ def _download_data(out_path):
     Function for downloading all the data to reproduce our study.
     """
     # Download bigclonebenchmark_lg and bigclonebenchmark_sm
-#     logging.info("Downloading BigCloneBenchmark datasets.")
-#     bigclone_path = out_path / "bigclonebenchmark"
-#     bigclone_path.mkdir(parents=True, exist_ok=True)
-#     gdown.cached_download(
-#         URLs["bigclonebenchmark"],
-#         str(bigclone_path / "bigclonebenchmark.zip"),
-#         postprocess=gdown.extractall,
-#     )
-    #     gdown.download(
-    #         URLs["bigclonebenchmark_lg"],
-    #         str(bigclone_path / "bigclonebenchmark_lg.csv")
-    #     )
-    #     gdown.download(
-    #         URLs["bigclonebenchmark_sm"],
-    #         str(bigclone_path / "bigclonebenchmark_sm.csv")
-    #     )
+    logging.info("Downloading BigCloneBenchmark datasets.")
+    bigclone_path = out_path / "bigclonebenchmark"
+    bigclone_path.mkdir(parents=True, exist_ok=True)
+    gdown.cached_download(
+        URLs["bigclonebenchmark"],
+        str(bigclone_path / "bigclonebenchmark.zip"),
+        postprocess=gdown.extractall,
+    )
 
     # Download Bug Fix Pairs
     logging.info("Downloading and extracting Bug Fix Pairs dataset.")
@@ -78,15 +71,15 @@ def _download_data(out_path):
     # from https://stackoverflow.com/a/14260592/5768407 by users
     # yoavram (https://stackoverflow.com/users/1063612/yoavram) and
     # kamran kausar (https://stackoverflow.com/users/3486460/kamran-kausar)
-#     logging.info("Downloading and extracting CodeSearchNet Challenge dataset.")
-#     codesearchnet_path = out_path / "codesearchnet"
-#     if not codesearchnet_path.exists():
-#         codesearchnet_path.mkdir(parents=True, exist_ok=True)
-#         r = requests.get(URLs["codesearchnet_java"])
-#         z = zipfile.ZipFile(io.BytesIO(r.content))
-#         z.extractall(codesearchnet_path / "codesearchnet_java")
-#     else:
-#         logging.info(f"File exists: {codesearchnet_path}")
+    logging.info("Downloading and extracting CodeSearchNet Challenge dataset.")
+    codesearchnet_path = out_path / "codesearchnet"
+    if not codesearchnet_path.exists():
+        codesearchnet_path.mkdir(parents=True, exist_ok=True)
+        r = requests.get(URLs["codesearchnet_java"])
+        z = zipfile.ZipFile(io.BytesIO(r.content))
+        z.extractall(codesearchnet_path / "codesearchnet_java")
+    else:
+        logging.info(f"File exists: {codesearchnet_path}")
 
 # Cell
 def _isASCII(mthd: str) -> bool:
@@ -467,6 +460,25 @@ def convert_df_to_tfds(
     return ds
 
 # Cell
+
+TYPES = 3
+def _process_bigclone(path):
+    for i in range(1, TYPES + 1):
+        df = pd.read_json(path / f"bigclone-type-{i}.jsonl", orient="records", lines=True).rename(columns={"function_1": "code"})
+        df = remove_non_ascii(df)
+
+        control_df = df["code"].to_frame()
+        control_df = replace_special_tokens(control_df, java_special_tokens)
+
+        treatment_df = df["function_2"].to_frame().rename(columns={"function_2": "code"})
+        treatment_df = replace_special_tokens(treatment_df, java_special_tokens)
+
+        big_clone_df = pd.DataFrame(
+            zip(control_df.code.values, treatment_df.code.values),
+            columns=["function_1", "function_2"]
+        )
+        big_clone_df.to_json(path / f"bigclone-type-{i}.jsonl", orient="records", lines=True)
+
 def _process_bug_fix(path):
     buggy_paths = sorted((path / "50-100").glob("buggy/*.java"))
     fixed_paths = sorted((path / "50-100").glob("fixed/*.java"))

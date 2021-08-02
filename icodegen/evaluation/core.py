@@ -2,7 +2,7 @@
 
 __all__ = ['get_mean_probs', 'find_parens', 'mean_dist_probs', 'token_taxonomy', 'non_wordy', 'get_error_rates',
            'ERROR_THRESHOLD', 'get_error_rates_df', 'ERROR_THRESHOLD', 'get_mean_cross_entropy', 'get_mean_probs',
-           'get_mean_cross_entropy_df', 'evaluate']
+           'get_mean_cross_entropy_df', 'TYPES', 'save_results', 'evaluate']
 
 # Cell
 import re
@@ -19,9 +19,10 @@ from ..data.transforms import (
     java_comment_remover,
     transform_df,
 )
-from ..model.core import Model, RNNModel
+from ..model.core import Model, RNNModel, TransformerHFModel, _loss
 from pathlib import Path
 from scipy import stats
+from transformers import TFGPT2LMHeadModel
 from tqdm.auto import tqdm
 from typing import Dict, List, Optional
 
@@ -377,8 +378,7 @@ def get_error_rates_df(df: pd.DataFrame, model: Model, bs: int = 16, n: Optional
         batch = ["<sos>" + mthd for mthd in df.code.values[i:i + bs]]
         # token the method and get the probabilities for each token from the model
         inputs = tf.stack([x.ids for x in model.tokenizer.encode_batch(batch)], axis = 0)
-        logits = model.model(inputs)
-        probs = tf.nn.softmax(logits).numpy()
+        probs = model.get_probs(inputs)
 
         for i in range(len(batch)):
             row = {
@@ -523,8 +523,7 @@ def get_mean_cross_entropy_df(df: pd.DataFrame, model: Model, bs = 16, n: Option
         batch = ["<sos>" + mthd for mthd in df.code.values[i:i + bs]]
         # token the method and get the probabilities for each token from the model
         inputs = tf.stack([x.ids for x in model.tokenizer.encode_batch(batch)], axis = 0)
-        logits = model.model(inputs)
-        probs = tf.nn.softmax(logits).numpy()
+        probs = model.get_probs(inputs)
 
         # calculate the cross entropy between the labels and probabilities
         losses = tf.keras.losses.sparse_categorical_crossentropy(
@@ -540,77 +539,64 @@ def get_mean_cross_entropy_df(df: pd.DataFrame, model: Model, bs = 16, n: Option
     return new_df
 
 # Cell
-_TRANSFORMs = {
-#     "randomized_tokens": code_token_randomizer,
-#     "randomized_lines": line_randomizer,
-    "comments_removed": java_comment_remover,
-}
+TYPES = 3
 
 # Cell
 def _get_metrics(df, model):
 #     mean_probs = get_mean_probs(df, model)
-#     error_taxonomy_df = get_error_rates_df(df, model, bs = 192)
+    error_taxonomy_df = get_error_rates_df(df, model, bs = 192)
 #     df_dist = mean_dist_probs(df, model)
     mean_cross_entropy_df = get_mean_cross_entropy_df(df, model, bs = 192)
 
     return {
-#         "error_taxonomy": error_taxonomy_df,
+        "error_taxonomy": error_taxonomy_df,
 #         "dist_mean": df_dist,
         "mean_cross_entropy": mean_cross_entropy_df,
     }
 
 
+def save_results(control_df, treatment_df, model, err_path, cross_path):
+    control_metrics = _get_metrics(control_df, model)
+    treatment_metrics = _get_metrics(treatment_df, model)
+
+    err_df = pd.concat(
+        [control_metrics["error_taxonomy"], treatment_metrics["error_taxonomy"]]
+    ).sort_index().reset_index(drop=True)
+    err_df["x_treatment"] = [False, True] * len(control_metrics["error_taxonomy"])
+    err_df.to_json(err_path, orient="records", lines=True)
+
+    cross_df = pd.concat(
+        [control_metrics["mean_cross_entropy"], treatment_metrics["mean_cross_entropy"]]
+    ).sort_index().reset_index(drop=True)
+    cross_df["x_treatment"] = [False, True] * len(control_metrics["mean_cross_entropy"])
+    cross_df.to_json(cross_path, orient="records", lines=True)
+
+
 def _long_range(bigclone_path, bugfix_path, cmt_path, model, out_path, n=None):
     out_path.mkdir(parents=True, exist_ok=True)
-    long_range_results = {}
 
-    # TODO add bigclone data
+#     for i in range(1, TYPES + 1):
+#         df = pd.read_json(bigclone_path / f"bigclone-type-{i}.jsonl", orient="records", lines=True)[:n]
+#         control_df = df["function_1"].to_frame().rename(columns={"function_1": "code"})
+#         treatment_df = df["function_2"].to_frame().rename(columns={"function_2": "code"})
 
-    df_buggy = pd.read_json(bugfix_path / "buggy.jsonl", orient="records", lines=True)[
-        :n
-    ]
-    buggy_metrics = _get_metrics(df_buggy, model)
+#         err_path = out_path / f"bigclone_type_{i}_error_taxonomy.jsonl"
+#         cross_path = out_path / f"bigclone_type_{i}_cross_entropy.jsonl"
+#         save_results(control_df, treatment_df, model, err_path, cross_path)
 
-    df_fixed = pd.read_json(bugfix_path / "fixed.jsonl", orient="records", lines=True)[
-        :n
-    ]
-    fixed_metrics = _get_metrics(df_fixed, model)
+    control_df = pd.read_json(bugfix_path / "buggy.jsonl", orient="records", lines=True)[:n]
+    treatment_df = pd.read_json(bugfix_path / "fixed.jsonl", orient="records", lines=True)[:n]
 
-#     bug_fix_err_df = pd.concat(
-#         [buggy_metrics["error_taxonomy"], fixed_metrics["error_taxonomy"]]
-#     ).sort_index().reset_index(drop=True)
-#     bug_fix_err_df["x_treatment"] = [False, True] * len(buggy_metrics["error_taxonomy"])
-#     bug_fix_err_df.to_json(out_path / "bug_fix_error_taxonomy.jsonl", orient="records", lines=True)
+    err_path = out_path / f"bug_fix_error_taxonomy.jsonl"
+    cross_path = out_path / f"bug_fix_cross_entropy.jsonl"
+    save_results(control_df, treatment_df, model, err_path, cross_path)
 
-    bug_fix_cross_df = pd.concat(
-        [buggy_metrics["mean_cross_entropy"], fixed_metrics["mean_cross_entropy"]]
-    ).sort_index().reset_index(drop=True)
-    bug_fix_cross_df["x_treatment"] = [False, True] * len(buggy_metrics["mean_cross_entropy"])
-    bug_fix_cross_df.to_json(out_path / "bug_fix_cross_entropy.jsonl", orient="records", lines=True)
+#     control_df = pd.read_json(cmt_path / "uncommented_code.jsonl", orient="records", lines=True)[:n]
+#     treatment_df = pd.read_json(cmt_path / "commented_code.jsonl", orient="records", lines=True)[:n]
 
-#     df_uncmtd = pd.read_json(cmt_path / "uncommented_code.jsonl", orient="records", lines=True)[:n]
-#     uncmtd_metrics = _get_metrics(df_uncmtd, model)
-
-#     df_cmtd = pd.read_json(cmt_path / "commented_code.jsonl", orient="records", lines=True)[:n]
-#     cmtd_metrics = _get_metrics(df_cmtd, model)
-
-#     cmtd_err_df = pd.concat(
-#         [uncmtd_metrics["error_taxonomy"], cmtd_metrics["error_taxonomy"]]
-#     ).sort_index().reset_index(drop=True)
-#     cmtd_err_df["x_treatment"] = [False, True] * len(uncmtd_metrics["error_taxonomy"])
-#     cmtd_err_df.to_json(out_path / "commenting_error_taxonomy.jsonl", orient="records", lines=True)
-
-#     cmtd_cross_df = pd.concat(
-#         [uncmtd_metrics["mean_cross_entropy"], cmtd_metrics["mean_cross_entropy"]]
-#     ).sort_index().reset_index(drop=True)
-#     cmtd_cross_df["x_treatment"] = [False, True] * len(uncmtd_metrics["mean_cross_entropy"])
-#     cmtd_cross_df.to_json(out_path / "commenting_cross_entropy.jsonl", orient="records", lines=True)
-
-#     return long_range_results
-
-
-def _counterfactual(control_results, treatment_results):
-    pass
+#     err_path = out_path / f"commenting_error_taxonomy.jsonl"
+#     cross_path = out_path / f"commenting_cross_entropy.jsonl"
+#     save_results(control_df, treatment_df, model, err_path, cross_path)
 
 
 def evaluate(data_path, model_path, experiment_path):
@@ -626,18 +612,15 @@ def evaluate(data_path, model_path, experiment_path):
             continue
         elif ".gitignore" in m_path.name:
             continue
-
-        if m_path.name != "gru_layers1_vocab10000_embed256_units1024" and m_path.name != "gru_layers3_vocab10000_embed256_units1024":
+        elif "deprecated" in m_path.name:
             continue
+
         print(m_path)
-        model = RNNModel.from_path(m_path)
-#         if m_path.name == "Transformer":
-#             model = TransformerModel.from_path(m_path)
-#         elif "rnn" in m_path.name:
-#             model = RNNModel.from_path(m_path)
-#         elif m_path.name == "RNN":
-#             pass
-#         return model
+        if "tfr" in m_path.name:
+            optimizer = tf.keras.optimizers.Adam(learning_rate=3e-5, epsilon=1e-08, clipnorm=1.0)
+            model = TransformerHFModel.from_path(m_path, TFGPT2LMHeadModel, optimizer, _loss)
+        else:
+            model = RNNModel.from_path(m_path)
 
         bigclone_path = testbed_path / "ts-bigclone-types"
         bugfix_path = testbed_path / "ts-bug-fix"
@@ -648,4 +631,3 @@ def evaluate(data_path, model_path, experiment_path):
             bigclone_path, bugfix_path, cmt_path,
             model, experiment_path / m_path.name
         )
-        # Counterfactuals

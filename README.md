@@ -1,35 +1,4 @@
-# Project name here
-> Summary description here.
+# Toward a Deeper Understanding of Neural Language Models for Code Generation
+>  Neural Language Models (NLMs) for code have rapidly progressed from research prototypes to commercial developer tools, as evidenced by the recent introductions of products such as VSCode IntelliSense and GitHub CoPilot. As these models mature, there is an increasing likelihood that they will be used to assist in building production-level software systems with large user bases. While it is clear that understanding the effectiveness of these models is becoming critical, current efficacy metrics often do not capture their real world performance; the lack of statistical rigor in model evaluations can lead to exaggerated claims as well. While, in general, the performance of NLMs for code appears promising, currently much is unknown about how such models function or their limitations in practical settings. While the prospect of increased developer productivity through automatic code generation is appealing, there is a pressing need to understand these limitations, and their implications, so that future research can focus on improving the correctness, safety, and user experience of deep code generators. 
 
-
-This file will become your README and also the index of your documentation.
-
-## Install
-
-`pip install your_project_name`
-
-## How to use
-
-Fill me in please! Don't forget code examples:
-
-```
-<<<<<<< HEAD
-1+1
-=======
-1 + 1
->>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
-```
-
-
-
-
-    2
-
-
-<<<<<<< HEAD
-=======
-
-# Contributing
-
-See https://github.com/WM-SEMERU/mlproj_template/blob/main/CONTRIBUTING.md for how to contribute.
->>>>>>> 4140f24734dc43a0cec843110b40849f867f6944
+To this end, this paper introduces \codegen, an evaluation methodology based upon statistical analyses of model predictions and causal inference to enable software oriented explanations to help interpret NLMs for code. While the theoretical underpinnings of \codegen are extensible to exploring different model properties, we provide a concrete instantiation that examines model errors according to programming language concepts, as well as how different usage settings impact model performance. Finally, we illustrate the types of results and insights our evaluation methodology can uncover by performing a case study on two popular deep learning architectures for the task of code completion

@@ -1,0 +1,4 @@
+outs:
+- md5: d4e27c40e3d6ed1a02b86296c9ad47ba
+  size: 6848
+  path: RNN-training-Model-R 1.0.1.ipynb

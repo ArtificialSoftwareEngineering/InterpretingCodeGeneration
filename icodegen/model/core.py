@@ -4,7 +4,7 @@ __all__ = ['logger', 'Model', 'TransformerHFModel', 'causal_attention_mask', 'Tr
            'TokenAndPositionEmbedding', 'MiniatureGPTModel', 'RNNModel', 'WildModel', 'VANILLA_CONFIG', 'GRU_CONFIG_1',
            'GRU_CONFIG_2', 'GRU_CONFIG_3', 'GRU_CONFIG_4', 'GRU_CONFIG_5', 'train', 'get_accumulation_optimizer',
            'AccumulationCallback', 'train_tfr_hf_model', 'train_tfr_keras_model', 'perform_hf_tfr_sampling',
-           'perform_min_tfr_model_sampling', 'perform_rnn_sampling']
+           'generate_batch_hf', 'process_generated_sequences', 'perform_min_tfr_model_sampling', 'perform_rnn_sampling']
 
 # Cell
 import json
@@ -37,7 +37,7 @@ import numpy as np
 import pandas as pd
 
 from ..data.core import convert_df_to_tfds, java_special_tokens, train_tokenizer, replace_spec_toks_to_original
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 
 # Cell
 def _loss(labels, logits):
@@ -1276,7 +1276,8 @@ def train_tfr_keras_model(config_dict, optimizer, loss, out_path,
 
 # Cell
 
-def _save_samples(df: pd.DataFrame, out_path: str, config_name: str, file_format:Optional[str]="jsonl"):
+def _save_samples(df: pd.DataFrame, out_path: str, config_name: str, file_format:Optional[str]="jsonl",
+                  complete_seqs: Optional[bool]=True):
     """
     Function to store samples for a specific model to a jsonl file.
     :param df: Pandas Dataframe containing samples
@@ -1287,6 +1288,12 @@ def _save_samples(df: pd.DataFrame, out_path: str, config_name: str, file_format
     out_path = Path(out_path)
     out_path = out_path / config_name
     out_path.mkdir(exist_ok=True)
+
+    completeness_path = "complete" if complete_seqs else "incomplete"
+
+    out_path = out_path / completeness_path
+    out_path.mkdir(exist_ok=True)
+
     now = datetime.datetime.now()
     ts = datetime.datetime.timestamp(now)
 
@@ -1318,33 +1325,107 @@ def perform_hf_tfr_sampling(gen_model: TransformerHFModel, n: int,
     :return: Pandas DataFrame containing the number of generated samples
     """
     logging.info('Starting sampling process')
+
     generated_seqs = []
+    incomplete_seqs = []
+    complete_seqs = []
 
     start_time = time.time()
+
+    missing_seqs = n
+
+    tokenizer = gen_model.tokenizer
+
     if n <= max_allowed:
-        generated_seqs = gen_model.generate(n=n, max_length=max_length)
+        while missing_seqs > 0:
+            generated_seqs = gen_model.generate(n=missing_seqs, max_length=max_length)
+            complete_gen, incomplete_gen = process_generated_sequences(generated_seqs, tokenizer)
+            complete_seqs += complete_gen
+            incomplete_seqs += incomplete_gen
+
+            missing_seqs = n - len(complete_seqs)
     else:
-        res = n % max_allowed
-        n_iterations = int(n/max_allowed)
-        for i in range(n_iterations):
-            seqs = gen_model.generate(n=max_allowed, max_length=max_length)
-            generated_seqs += seqs
+        # Cannot generate all sequences at once, gotta split generation in batches
 
-        if res > 0:
-            seqs = gen_model.generate(n=res, max_length=max_length)
-            generated_seqs += seqs
+        while missing_seqs > 0:
+            generated_seqs = generate_batch_hf(gen_model, missing_seqs, max_length, max_allowed)
 
-    gen_df = pd.DataFrame(generated_seqs, columns=["code"])
+            complete_gen, incomplete_gen = process_generated_sequences(generated_seqs, tokenizer)
+            complete_seqs += complete_gen
+            incomplete_seqs += incomplete_gen
 
-    # Clean "raw" generated data
-    clean_df = replace_spec_toks_to_original(gen_df, special_toks)
+            missing_seqs = n - len(complete_seqs)
+
+    complete_seqs_df = pd.DataFrame(complete_seqs, columns=["code"])
+    incomplete_seqs_df = pd.DataFrame(incomplete_seqs, columns=["code"])
+
+    # Clean "raw" generated data (replace special tokens)
+    # complete_snippets_df = replace_spec_toks_to_original(complete_seqs_df, special_toks)
+    # incomplete_snippets_df = replace_spec_toks_to_original(incomplete_seqs_df, special_toks)
+    complete_snippets_df = complete_seqs_df
+    incomplete_snippets_df = incomplete_seqs_df
 
     if out_path is not None:
-        _save_samples(clean_df, out_path, gen_model.config_name, file_format)
+        _save_samples(complete_snippets_df, out_path, gen_model.config_name, file_format)
+        _save_samples(incomplete_snippets_df, out_path, gen_model.config_name, file_format, complete_seqs=False)
+
     end_time = time.time()
 
     logging.info(f"Time elapsed sampling: {end_time - start_time} seconds.")
-    return clean_df
+
+    return complete_snippets_df.append(incomplete_snippets_df)
+
+# Cell
+
+def generate_batch_hf(gen_model: TransformerHFModel, n: int,
+                      max_length: int, max_allowed: int):
+    """
+    Generate batches of sequences (using HF transformers)
+    """
+    generated_seqs = []
+
+    res = n % max_allowed
+    n_iterations = int(n/max_allowed)
+    for i in range(n_iterations):
+        seqs = gen_model.generate(n=max_allowed, max_length=max_length)
+        generated_seqs += seqs
+
+    if res > 0:
+        seqs = gen_model.generate(n=res, max_length=max_length)
+        generated_seqs += seqs
+
+    return generated_seqs
+
+# Cell
+
+# Process the generated sequences in order to perform an appropriate analysis
+
+def process_generated_sequences(sequences_batch: List, tokenizer):
+    complete_seqs = []
+    incomplete_seqs = []
+
+    tokenized_seqs = tokenizer.encode_batch(sequences_batch)
+
+    # Verify each sequence in the batch
+    for i in range(len(sequences_batch)):
+        sequence = sequences_batch[i]
+        encoded_seq = tokenized_seqs[i]
+        ids, tokens = encoded_seq.ids, encoded_seq.tokens
+
+        # Look in the sequence for special characters indicating seq. ending
+        seq_is_incomplete = True
+        for j in range(len(tokens)):
+            tok = tokens[j]
+            if tok == "<pad>" or tok == "<eos>": # The code snippet is 'complete'
+                seq_is_incomplete = False
+                break
+
+        if seq_is_incomplete:
+            incomplete_seqs.append(sequence)
+        else:
+            complete_seqs.append(sequence)
+
+    return complete_seqs, incomplete_seqs
 
 # Cell
 

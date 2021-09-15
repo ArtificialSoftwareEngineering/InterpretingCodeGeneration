@@ -118,7 +118,7 @@ nb_path: "nbs/00_data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="remove_non_ascii" class="doc_header"><code>remove_non_ascii</code><a href="https://github.com/danaderp/InterpretingCodeGeneration/tree/master/icodegen/data.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>remove_non_ascii</code>(<strong><code>df</code></strong>, <strong><code>n</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="remove_non_ascii" class="doc_header"><code>remove_non_ascii</code><a href="https://github.com/XXXX/InterpretingCodeGeneration/tree/master/icodegen/data.py#L30" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>remove_non_ascii</code>(<strong><code>df</code></strong>, <strong><code>n</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Remove all methods that contain non-ascii characters from a given pandas dataframe, not in-place.</p>
 <p>:param df: the pandas dataframe containing each method to be beautified
@@ -243,7 +243,7 @@ nb_path: "nbs/00_data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="beautify_code" class="doc_header"><code>beautify_code</code><a href="https://github.com/danaderp/InterpretingCodeGeneration/tree/master/icodegen/data.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>beautify_code</code>(<strong><code>df</code></strong>, <strong><code>n</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="beautify_code" class="doc_header"><code>beautify_code</code><a href="https://github.com/XXXX/InterpretingCodeGeneration/tree/master/icodegen/data.py#L73" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>beautify_code</code>(<strong><code>df</code></strong>, <strong><code>n</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Beautify the methods in a pandas dataframe using uncrustify with the sun.cfg style, i.e., Oracle's style, not in-place.</p>
 <p>:param df: the pandas dataframe containing each method to be beautified
@@ -374,7 +374,7 @@ nb_path: "nbs/00_data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="replace_special_tokens" class="doc_header"><code>replace_special_tokens</code><a href="https://github.com/danaderp/InterpretingCodeGeneration/tree/master/icodegen/data.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_special_tokens</code>(<strong><code>df</code></strong>, <strong><code>spec_toks</code></strong>, <strong><code>n</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="replace_special_tokens" class="doc_header"><code>replace_special_tokens</code><a href="https://github.com/XXXX/InterpretingCodeGeneration/tree/master/icodegen/data.py#L164" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>replace_special_tokens</code>(<strong><code>df</code></strong>, <strong><code>spec_toks</code></strong>, <strong><code>n</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Replace all the special tokens in a pandas dataframe.</p>
 <p>:param df: the pandas dataframe containing each method to replace special tokens in
@@ -446,7 +446,7 @@ nb_path: "nbs/00_data.ipynb"
 
 
 <div class="output_markdown rendered_html output_subarea ">
-<h4 id="train_tokenizer" class="doc_header"><code>train_tokenizer</code><a href="https://github.com/danaderp/InterpretingCodeGeneration/tree/master/icodegen/data.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>train_tokenizer</code>(<strong><code>df</code></strong>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>20000</code></em>, <strong><code>min_freq</code></strong>=<em><code>2</code></em>, <strong><code>output</code></strong>=<em><code>None</code></em>)</p>
+<h4 id="train_tokenizer" class="doc_header"><code>train_tokenizer</code><a href="https://github.com/XXXX/InterpretingCodeGeneration/tree/master/icodegen/data.py#L180" class="source_link" style="float:right">[source]</a></h4><blockquote><p><code>train_tokenizer</code>(<strong><code>df</code></strong>, <strong><code>n</code></strong>=<em><code>None</code></em>, <strong><code>vocab_sz</code></strong>=<em><code>20000</code></em>, <strong><code>min_freq</code></strong>=<em><code>2</code></em>, <strong><code>output</code></strong>=<em><code>None</code></em>)</p>
 </blockquote>
 <p>Train a ByteLevel BPE tokenizer on a given pandas dataframe. Code adapted from <a href="https://github.com/huggingface/tokenizers/tree/master/bindings/python">https://github.com/huggingface/tokenizers/tree/master/bindings/python</a>.</p>
 <p>:param df: the pandas dataframe containing each method to have the tokenizer train on

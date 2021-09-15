@@ -33,9 +33,9 @@ modules = ["data/core.py",
            "model/core.py",
            "model/gru.py"]
 
-doc_url = "https://danaderp.github.io/icodegen/"
+doc_url = "https://XXXX.github.io/icodegen/"
 
-git_url = "https://github.com/danaderp/InterpretingCodeGeneration/tree/master/"
+git_url = "https://github.com/XXXX/InterpretingCodeGeneration/tree/master/"
 =======
          "convert_df_to_tfds": "00_data.core.ipynb",
          "process_data": "00_data.core.ipynb",
